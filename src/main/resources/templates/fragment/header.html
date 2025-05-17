@@ -1,0 +1,118 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<!-- linking master css file -->
+<link href="assets/css/site.css" rel="stylesheet">
+<!-- linking fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="assets/icons/fav-icon/favicon.ico" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" integrity="sha512-siarrzI1u3pCqFG2LEzi87McrBmq6Tp7juVsdmGY1Dr8Saw+ZBAzDzrGwX3vgxX1NkioYNCFOVC0GpDPss10zQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- {{-- link for datepicker --}} -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.3/flatpickr.min.css">
+	<!-- chart js -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	
+</head>
+
+<body>
+	<div class="main-wrapper menu-close" id="mainWrapper">
+
+		<div class="header">
+			<div class="logo-container">
+				<!-- <div class="resp-nav-toggle-container" id="respNavToggler">
+                    <span class="toggler-icon-top"></span>
+                    <span class="toggler-icon-middle"></span>
+                    <span class="toggler-icon-bottom"></span>
+                </div>
+                <img src="icons/logo.png" alt="" srcset="" class="nav-logo"> -->
+
+				<div class="nav-toggle-container" id="navToggler">
+					<span class="toggler-icon-top"></span> <span class="toggler-icon-middle"></span> <span
+						class="toggler-icon-bottom"></span>
+				</div>
+				<img src="assets/icons/logo.png" alt="" srcset="" class="nav-logo">
+			</div>
+			<div class="greetings-container d-none d-lg-flex">
+				<div>
+					<span class="lbl-greetings" id="greetingSpan">Good Morning</span><span>, </span> <span
+						class="greetings-role capitalize"
+						th:text="${#authentication.getPrincipal().getUser().getName}"></span>
+				</div>
+				<!-- <div class="lbl-date-time"  th:text="${#authentication.principal.date}"></div> -->
+				<span id="dateSpan"></span>
+			</div>
+			<div class="toolbar-container">
+				<!-- <div class="toolbar-item">
+					<div class="notification-container">
+						<div class="dropdown">
+							<a class="toolbar-link" href="#" role="button" id="dropdownMenuLink"
+								data-bs-toggle="dropdown" aria-expanded="false"> <span
+									class="icon-notification-container"> <span
+										class="icon-common icon-topbar icon-notification"></span>
+								</span>
+							</a>
+							<ul class="dropdown-menu notification-details-container" aria-labelledby="dropdownMenuLink">
+								<div class="notification-dropdown-title">
+									<div class="notification-view-icon-container">
+										<span class="icon-common icon-notification-details"></span>
+									</div>
+									<div class="lbl-notification-details">No New Notification</div>
+								</div>
+							</ul>
+						</div>
+					</div>
+				</div> -->
+				<div class="toolbar-item">
+					<div class="profile-container">
+						<div class="dropdown">
+							<a class="toolbar-link" href="#" role="button" id="dropdownMenuLink"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								<div>
+									<span class="icon-profile-container">
+										<!-- <span class="icon-common icon-profile"></span> -->
+										<img src="assets/icons/user.svg" alt="">
+									</span>
+								</div>
+								<div>
+									<div class="profile-name-container">
+										<!-- <span class="profile-name">{{logdet}}</span> -->
+										<span class="profile-name"
+											th:text="${#authentication.getPrincipal().getUser().getName}"></span> <span
+											class="icon-common icon-toolbar icon-chevron"></span>
+									</div>
+									<div class="profile-role capitalize" id="" th:text="${#authentication.getPrincipal().getUser().getRole()}"></div>
+								</div>
+
+
+							</a>
+							<ul class="dropdown-menu profile-details-container" aria-labelledby="dropdownMenuLink"
+								style="transform: translate(-12px, 60px) !important;">
+								<li class="media dropdown-item"><a th:href="@{/activitylog}" class="profile-container">
+										<span class="icon-common icon-header-dropdown-items icon-activity-log"></span>
+										<span class="lbl-header-menu">Activity Log</span>
+									</a></li>
+								<li class="media dropdown-item"><a th:href="@{/updateDataBygoogleapi}"
+										class="profile-container">
+										<span class="icon-common icon-header-dropdown-items icon-data-update"></span>
+										<span class="lbl-header-menu">Data Update</span>
+									</a></li>
+								<li class="media dropdown-item"><a th:href="@{/resetpass}" class="profile-container">
+										<span class="icon-common icon-header-dropdown-items icon-reset-pass"></span>
+										<span class="lbl-header-menu">Reset Password</span>
+									</a></li>
+								<li>
+									<div class="dv-separator mt-3 mb-1"></div>
+								</li>
+								<li class="media dropdown-item"><a th:href="@{/logout}" class="logout-container"> <span
+											class="icon-common icon-header-dropdown-items icon-logout"></span>
+										<span class="lbl-header-menu">Logout</span>
+									</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="body-wrapper" id="bodyWrapper"> -->
+
+		<div th:replace="fragment/sidebar"></div>

@@ -1,0 +1,203 @@
+<div th:replace="fragment/head"></div>
+<title>Report</title>
+<div th:replace="fragment/header"></div>
+<div ng-app="AdminManagment" ng-controller="AttendanceReportController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}"><span class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Attendance Report</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="user-details-container">
+        <div class="page-header">
+            <span class="header-line"></span> <span class="lbl-page-header">Attendance Report</span>
+            <span class="header-line"></span>
+        </div>
+        <div class="page-action-container">
+            <div class="page-action-start-container">
+                <div class="btn-page-action-container">
+                    <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.user_id"
+                    ng-change="getDataNameWise(nameList.user_id,nameList.month_id)"
+                    ng-options="td.user_id as td.username for td in nameList">
+                    <option class="select-item" value="">-Select Employee-</option>
+                </select>
+                </div>
+                <div class="btn-page-action-container">
+                    <select class="btn btn-page-action btn-page-action-dropdown" ng-model="month_id"
+                    ng-change="filterByMonth(month_id)"
+                        ng-options="monthYearObj.month as monthYearObj.name for monthYearObj in uniqueMonths">
+                        <option class="select-item" value="">-Select Month-</option>
+                    </select>
+                </div>
+                <div class="btn-page-action-container">
+                    <select class="btn btn-page-action btn-page-action-dropdown" ng-model="attend_status"
+                            ng-change="filterByAttendStatus(attend_status)">
+                        <option class="select-item" selected value="">All</option>
+                        <option class="select-item" value="C">Completed</option>
+                        <option class="select-item" value="U">Unfinished</option>
+                    </select>
+                </div>
+            </div>
+            <div class="page-action-end-container">
+                <div class="btn-page-action-container">
+                    <div class="dropdown">
+                        <button class="btn btn-page-action" type="button"
+                            id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <span class="icon-common icon-filter icon-page-action-button"></span>
+                            <span class="lbl-page-action-button">Filter</span>
+                        </button>
+                            <ul class="dropdown-menu filter-dropdown-menu"
+                                aria-labelledby="dropdownMenuButton1">
+                                <form ng-submit="fetchAttendanceData()">
+                                <div class="lbl-filter-header">Start Date:</div>
+                                <input class="form-control filter-date-picker w-100" ng-model="date.startdate" type="text"
+                                id="holidayDate" placeholder="dd-mm-yyy">
+                                <div class="lbl-filter-header">End Date:</div>
+                                <input class="form-control filter-date-picker w-100" ng-model="date.enddate" type="text"
+                                id="holidayDate" placeholder="dd-mm-yyy">
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-apply btn-primary">
+                                        <span class="lbl-btn">Apply</span> <span
+                                            class="icon-common icon-btn icon-check"></span>
+                                    </button>
+                                </div>
+                            </form>
+                            </ul>
+                    </div>
+                </div>
+                <div class="btn-page-action-container">
+                    <button class="btn btn-page-action btn-page-action-dropdown"
+                        type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="lbl-page-action-button">Export As</span> <span
+                            class="icon-common icon-chevron icon-page-action-button"></span>
+                    </button>
+                    <ul class="dropdown-menu action-dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" ng-click="exportData()"> <span
+                                class="icon-common icon-action-dropdown icon-excel"></span> <span
+                                class="">Excel</span>
+                        </a></li>
+                        <li><a class="dropdown-item" ng-click="printData()"> <span
+                                class="icon-common icon-action-dropdown icon-print"></span> <span
+                                class="">Print</span>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="user-details overflow-x-auto" id="customers">
+            <table class="table-user-details table-lg">
+                <tr class="table-head-primary row-red">
+                    <th><label class="form-check-label" for="flexCheckDefault">SL
+                            No.</label></th>
+                    <th>Name</th>
+                    <th style="width: 10%;">Customer Name</th>
+                    <th>
+                        <div>Start Date</div>
+                        <div>Start Time</div>
+                    </th>
+                    <th>
+                        <div>Start Location</div>
+                        <div>Lat/Long</div>
+                    </th>
+                    <th>
+                        <div>End Date</div>
+                        <div>End Time</div>
+                    </th>
+                    <th>
+                        <div>End Location</div>
+                        <div>Lat/Long</div>
+                    </th>
+                    <th>Purpose</th>
+                    <div class="spinner-wrapper" id="loader">
+                        <div class="spinner">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                <tbody ng-repeat="data in attendanceData | filter:search">
+                    <td>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                        </div>
+                    </td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.customerName}}</td>
+                    <td>
+                        <div>{{data.startDate}}</div>
+                        <div>{{data.startTime}}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="td.startLocationArea!=null">{{data.startLocationArea}}</div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis" ng-if="td.startLocationArea==null || td.startLocationArea==''" >{{data.startLocation}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area" href="https://www.google.com/maps?q={{td.startLat}},{{td.startLong}}" target="_blank">{{data.startLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{data.startLat}}, {{data.startLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{data.endDate}}</div>
+                        <div>{{data.endTime}}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="td.endLocationArea!=null">{{data.endLocationArea}}</div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis" ng-if="td.endLocationArea==null || td.endLocationArea==''" >{{data.endLocation}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area" href="https://www.google.com/maps?q={{td.endLat}},{{td.endLong}}" target="_blank">{{data.endLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{data.endLat}}, {{data.endLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value lbl-ellipsis lbl-purpose">{{data.purpose}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <div>{{data.purpose}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tbody>
+                <tr ng-if="attendanceData.length == 0">
+                    <td colspan="15" style="font-size: large;">No data found
+                        current month</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/attendance.js"></script>

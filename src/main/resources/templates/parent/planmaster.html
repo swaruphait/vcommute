@@ -1,0 +1,431 @@
+<div th:replace="fragment/head"></div>
+<title>Plan Master</title>
+<div th:replace="fragment/header"></div>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
+
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
+<div class="user-details-container" ng-app="SubcriptionManagment" ng-controller="PlanController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeCompany}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Plan Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Plan Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="page-action-container">
+            <div class="page-action-start-container align-items-center">
+                <form>
+                    <input class="form-control" type="search" ng-model="search"
+                    placeholder="Search Plan..." aria-label="Search">
+                    <span class="icon-common icon-form icon-search"></span>
+                </form>
+            </div>
+            <button type="button" class="btn btn-page-action btn-new-bookings" data-bs-toggle="modal"
+            data-bs-target="#newPlan" ng-click="openNewPlan()">
+            <span class="icon-common icon-page-action icon-add-circle"></span>
+            <span class="lbl-page-action" >Add Plan</span>
+        </button>
+        </div>
+        <div class="user-details overflow-x-auto">
+            <table class="table-user-details table-lg">
+                <tr class="table-head-primary">
+                    <th>SL No.</th>
+                    <th>Plan Name</th>
+                    <th>Company</th>
+                    <th>User</th>
+                    <th>Commute Access</th>
+                    <th>Attendance Access</th>
+                    <th>FaceAttendance</th>
+                    <th>Leave Managment</th>
+                    <th>Finance Access</th>
+                    <th>Price</th>
+                    <th>Validity</th>
+                    <th>Action</th>
+                </tr>
+<tbody ng-repeat="plan in plans | filter:search" class="master-list row-red">
+                <tr >
+                    <td>{{$index + 1}}</td>
+                    <td><span class="user-role">{{plan.planName}}</span></td>
+                    <td><span class="user-role">{{plan.addNoOfCompany}}</span></td>
+                    <td><span class="user-role">{{plan.addNoOfUser}}</span></td>
+                    <td><span class="user-role">{{plan.commuteAccess ? 'Yes' : 'No'}}</span></td>
+                    <td><span class="user-role">{{plan.attendaceAccess ? 'Yes' : 'No'}}</span></td>
+                    <td><span class="user-role">{{plan.biometricAttend ? 'Yes' : 'No'}}</span></td>
+                    <td><span class="user-role">{{plan.leaveAccess ? 'Yes' : 'No'}}</span></td>
+                    <td><span class="user-role">{{plan.financeAccess ? 'Yes' : 'No'}}</span></td>
+                    <td><span class="user-role">{{plan.price}} /User</span></td>
+                    <td><span class="user-role">{{plan.validity}} /Days</span></td>
+                    <!-- <td>
+                            <form method="POST" class="content-center">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch">
+                                    <input class="user" type="checkbox" data-id="2"
+                                        ng-click="changeStatus(customer.gradeId)" ng-model="emprole.status"
+                                        name="status" checked="">
+                                    <span class="knob"></span>
+                                </label>
+                            </form>
+                        </td> -->
+                    <td>
+                        <div class="action-container">
+                            <span class="btn-action btn-icon btn-edit">
+                                <span class="icon-common icon-action icon-edit-new"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editPlan" ng-click="openEditPlan(plan.id)"
+                                    onclick="openMasterEditview(this)"></span>
+                            </span>
+                            <span class="btn-action btn-icon btn-trash">
+                                <span class="icon-common icon-action icon-trash" ng-click="deleteCustomer(customer.id)"
+                                    title="Delete"></span>
+                            </span>
+                        </div>
+        </div>
+        </td>
+        </tr>
+    </tbody>
+        </table>
+    </div>
+<!-- ***********************ADD COMPANY MODAL START************************* -->
+<div class="modal fade modal-custom" id="newPlan" tabindex="-1" aria-labelledby="newRestaurantLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                <span class="icon-common icon-modal-header icon-add-circle"></span>
+                <span>Add Company</span>
+            </h1>
+        </div>
+        <div class="modal-body">
+            <form autocomplete="off" class="reg-form row g-3" ng-submit="addEditPlan()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Plan Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="planName" type="text" ng-model="form.planName" class="form-control"
+                                    placeholder="Enter Plan Name"
+                                    ng-change="form.planName = (form.planName | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">
+                                    Company Limit: <span class="text-danger">*</span></label>
+                                <input name="company" type="number" ng-model="form.addNoOfCompany" class="form-control"
+                                    placeholder="Enter Max Company Add" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter number of company can added')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Employee Limit:
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input name="employee" type="number" ng-model="form.addNoOfUser" class="form-control"
+                                placeholder="Enter Max Employee Add" min="0" step="1"
+                                oninvalid="this.setCustomValidity('Please  Enter Number of Employee can added')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Commute Managment:
+                                <span class="text-danger">*</span></label>
+                            <select ng-model="form.commuteAccess" class="form-select"
+                                oninvalid="this.setCustomValidity('Please Select Commute Access')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="">Select Option-</option>
+                                <option value="true">Yes-</option>
+                                <option value="false">No-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Attendance Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.attendaceAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Attendance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Leave Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.leaveAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Levae Managment Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Biometric Attendance:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.biometricAttend" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Biomatric Attendance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Finance Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.financeAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Finance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Price:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input name="company" type="number" min="0" step="1" ng-model="form.price"
+                                    class="form-control" placeholder="Enter Price"
+                                    oninvalid="this.setCustomValidity('Please Entry Price')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Validity:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input name="company" type="number" min="0" step="1" ng-model="form.validity"
+                                    class="form-control" placeholder="No of Days"
+                                    oninvalid="this.setCustomValidity('Please Enter validity Number of Days')"
+                                    oninput="this.setCustomValidity('')" required />
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Editable:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.editable" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Finance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>
+<!-- ************************ADD COMPANY MODAL END******************** -->
+<!-- **************************EDIT PLAN*********************************** -->
+<div class="modal fade modal-custom" id="editPlan" tabindex="-1" aria-labelledby="newRestaurantLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                <span class="icon-common icon-modal-header icon-add-circle"></span>
+                <span>Add Company</span>
+            </h1>
+        </div>
+        <div class="modal-body">
+            <form autocomplete="off" class="reg-form row g-3" ng-submit="addEditPlan()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Plan Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="planName" type="text" ng-model="form.planName" class="form-control"
+                                    placeholder="Enter Plan Name"
+                                    ng-change="form.planName = (form.planName | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">
+                                    Company Limit: <span class="text-danger">*</span></label>
+                                <input name="company" type="number" ng-model="form.addNoOfCompany" class="form-control"
+                                    placeholder="Enter Max Company Add" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter number of company can added')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Employee Limit:
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input name="employee" type="number" ng-model="form.addNoOfUser" class="form-control"
+                                placeholder="Enter Max Employee Add" min="0" step="1"
+                                oninvalid="this.setCustomValidity('Please  Enter Number of Employee can added')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Commute Managment:
+                                <span class="text-danger">*</span></label>
+                            <select ng-model="form.commuteAccess" class="form-select"
+                                oninvalid="this.setCustomValidity('Please Select Commute Access')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="">Select Option-</option>
+                                <option ng-value="true">Yes-</option>
+                                <option ng-value="false">No-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Attendance Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.attendaceAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Attendance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option ng-value="true">Yes-</option>
+                                    <option ng-value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Leave Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.leaveAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Levae Managment Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option ng-value="true">Yes-</option>
+                                    <option ng-value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Biometric Attendance:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.biometricAttend" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Biomatric Attendance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option ng-value="true">Yes-</option>
+                                    <option ng-value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Finance Managment:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.financeAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Finance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option ng-value="true">Yes-</option>
+                                    <option ng-value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Price:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input name="company" type="number" min="0" step="1" ng-model="form.price"
+                                    class="form-control" placeholder="Enter Price"
+                                    oninvalid="this.setCustomValidity('Please Entry Price')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Validity:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input name="company" type="number" min="0" step="1" ng-model="form.validity"
+                                    class="form-control" placeholder="No of Days"
+                                    oninvalid="this.setCustomValidity('Please Enter validity Number of Days')"
+                                    oninput="this.setCustomValidity('')" required />
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Editable:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.editable" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Finance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option ng-value="true">Yes-</option>
+                                    <option ng-value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/parent/plan.js"></script>

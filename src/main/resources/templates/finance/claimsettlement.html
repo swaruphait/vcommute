@@ -1,0 +1,412 @@
+<div th:replace="fragment/head"></div>
+<title>Commute Claim Approval</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="FinanceManagment" ng-controller="CliamManangementController">
+    <div class="page-header">
+        <span class="header-line"></span> <span class="lbl-page-header">Commute Claim Approval</span>
+        <span class="header-line"></span>
+    </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/home}"><span class="icon-common icon-title-dashboard"></span>
+                    Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Commute Claim Approval</li>
+        </ol>
+    </nav>
+    <div class="page-action-container">
+        <div class="page-action-start-container d-flex ms-5">
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="cl.id" ng-init="cl.id"
+                    ng-change="getApprovalClasterData(cl.id)">
+                    <option value="" disabled selected>-Select Cluster-</option>
+                    <option ng-repeat="cluster in clusters" value="{{cluster.id}}">{{cluster.clusterName}}
+                    </option>
+                </select>
+            </div>
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.user_id"
+                    ng-change="getApprovalClasterDataNameWise(nameList.user_id)"
+                    ng-options="td.user_id as td.username for td in nameList">
+                    <option class="select-item" value="">-Select Users-</option>
+                </select>
+            </div>
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="month_id"
+                    ng-change="filterByMonth(month_id)"
+                    ng-options="monthYearObj.month as monthYearObj.name for monthYearObj in uniqueMonths">
+                    <option class="select-item" value="">-Select Month-</option>
+                </select>
+            </div>
+        </div>
+        <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action btn-page-action-dropdown" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="lbl-page-action-button">More</span> <span
+                        class="icon-common icon-chevron icon-page-action-button"></span>
+                </button>
+                <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" ng-click="GetValueForApprove()">Total
+                            Approve</a></li>
+                    <li><a class="dropdown-item" ng-click="GetValueForDisApprove()">Total Disapprove</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="user-details overflow-x-auto">
+        <table class="table-user-details table-lg">
+            <tr class="table-head-primary">
+                <th>
+                    <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                </th>
+                <th>Name</th>
+                <th>Customer Name</th>
+                <th>
+                    <div>Start Date</div>
+                    <div>Start Time</div>
+                </th>
+                <th>
+                    <div>Start Location</div>
+                </th>
+                <th>
+                    <div>End Date</div>
+                    <div>End Time</div>
+                </th>
+                <th>
+                    <div>End Location</div>
+                </th>
+                <th>Total Distance</th>
+                <th>Travel Time</th>
+                <th style="width: 7%;">
+                    <div>Est. Price</div>
+                    <div>Act. Price</div>
+                </th>
+                <th>Ref. Code</th>
+                <th>Purpose</th>
+                <th>Remarks</th>
+                <th>Action</th>
+            </tr>
+            <div class="spinner-wrapper" id="loader">
+                <div class="spinner">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            </td>
+            </tr>
+            <tbody ng-repeat="td in clusterData | filter:search" class="list-row-container">
+                <tr onclick="activeSubRow(this)" class="list-row row-red">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <input class="form-check-input mt-0 me-2" type="checkbox" value="" id="checkALL"
+                                ng-change="checkItem(td.id, td.selected)" onclick="selectRow(this)"
+                                ng-model="td.selected">
+                            <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                        </div>
+                    </td>
+                    <td>{{td.name}}</td>
+                    <td style="width: 10%;">{{td.customerName}}</td>
+                    <td>
+                        <div>{{td.startDate | date:"dd-MM-yyyy"}}</div>
+                        <div>{{td.startTime}}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="td.startLocationArea!=null">{{td.startLocationArea}}</div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                ng-if="td.startLocationArea==null || td.startLocationArea==''">{{td.startLocation}}
+                            </div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area"
+                                            href="https://www.google.com/maps?q={{td.startLat}},{{td.startLong}}"
+                                            target="_blank">{{td.startLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{td.startLat}}, {{td.startLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{td.endDate | date:"dd-MM-yyyy"}}</div>
+                        <div>{{td.endTime }}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="td.endLocationArea!=null">{{td.endLocationArea}}</div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                ng-if="td.endLocationArea==null || td.endLocationArea==''">{{td.endLocation}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area"
+                                            href="https://www.google.com/maps?q={{td.endLat}},{{td.endLong}}"
+                                            target="_blank">{{td.endLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{td.endLat}}, {{td.endLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{td.totalDistance}} k.m</td>
+                    <td>{{td.totalTime}}</td>
+                    <td>
+                        <div class="lbl-nowrap"> &#8377; {{td.totalEstimatePrice | number : 2}}</div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">&#8377;</div>
+                            </div>
+                            <input type="text" ng-model="td.totalActualPrice"
+                                ng-init="td.totalActualPrice = td.totalActualPrice || '0.0'" class="form-control"
+                                id="inlineFormInputGroup" placeholder="0.0" onclick="selectRowAction(this)">
+                        </div>
+                    </td>
+                    <td class="word-break">{{td.referencenumber}}</td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.purpose}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <div>{{td.purpose}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="word-break">
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.note}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <div>{{td.note}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-container">
+                            <span class="btn-action btn-icon btn-tick" onclick="selectRowAction(this)">
+                                <span class="icon-common icon-action icon-tick"
+                                    ng-click="ApproveData(td.id,td.clusetrId,td.totalActualPrice)"></span>
+                            </span>
+                            <span class="btn-action btn-icon btn-x" onclick="selectRowAction(this)">
+                                <span class="icon-common icon-action icon-x"
+                                    ng-click="DisapproveData(td.id,td.totalActualPrice)"></span>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="sub-row">
+                    <th class="sub-row-header">Sl.</th>
+                    <th class="sub-row-header">Mode</th>
+                    <th class="sub-row-header">
+                        <div>Start Date</div>
+                        <div>Start Time</div>
+                    </th>
+                    <th class="sub-row-header">
+                        Start Location
+                    </th>
+                    <th class="sub-row-header">
+                        <div>End Date</div>
+                        <div>End Time</div>
+                    </th>
+                    <th class="sub-row-header">
+                        End Location
+                    </th>
+                    <th class="sub-row-header">
+                        <div>Estimated Price</div>
+                        <div>Price</div>
+                    </th>
+                    <th class="sub-row-header">Estimated Distance</th>
+                    <th class="sub-row-header">Estimated Time</th>
+                    <th class="sub-row-header">Document</th>
+                    <td colspan="6"></td>
+                </tr>
+                <tr class="sub-row" ng-repeat="tdata in  td.commuteDetails">
+                    <td>{{$index+1}}</td>
+                    <td class="sub-row-data">{{tdata.modeName}}</td>
+                    <td class="sub-row-data">
+                        <div>{{tdata.startDate}}</div>
+                        <div>{{tdata.startTime}}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="tdata.startLocationArea!=null">{{tdata.startLocationArea}}
+                            </div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                ng-if="tdata.startLocationArea==null || tdata.startLocationArea==''">
+                                {{tdata.startLocation}}</div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area"
+                                            href="https://www.google.com/maps?q={{tdata.startLat}},{{tdata.startLong}}"
+                                            target="_blank">{{tdata.startLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{tdata.startLat}}, {{tdata.startLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="sub-row-data">
+                        <div>{{tdata.endDate}}</div>
+                        <div>{{tdata.endTime}}</div>
+                    </td>
+                    <td>
+                        <div class="value-tooltip-container">
+                            <div class="lbl-value" ng-if="tdata.endLocationArea!=null">{{tdata.endLocationArea}}</div>
+                            <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                ng-if="tdata.endLocationArea==null || tdata.endLocationArea==''">{{tdata.endLocation}}
+                            </div>
+                            <div class="value-details">
+                                <div class="value-tooltip">
+                                    <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <a class="me-2 text-area"
+                                            href="https://www.google.com/maps?q={{tdata.endLat}},{{tdata.endLong}}"
+                                            target="_blank">{{tdata.endLocation}}</a>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                    <div class="dv-seperator-sm"></div>
+                                    <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                        <span class="me-2 text-area">{{tdata.endLat}}, {{tdata.endLong}}</span>
+                                        <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)"
+                                            title="Copy to clipboard"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="sub-row-data">
+                        <div>&#8377;{{tdata.estimatePrice}}</div>
+                        <div>&#8377;{{tdata.actualPrice}}</div>
+                    </td>
+                    <td>{{tdata.distance}}</td>
+                    <td>{{tdata.time}}</td>
+                    <td class="sub-row-data">
+                        <span>
+                            <img ng-if="tdata.images!=null" id="image_view_modal"
+                                ng-click="setImageAsViewed($index,tdata.images)" src="uploads/{{tdata.images}}"
+                                style="width: 50px; border-radius: 10px; cursor: pointer;" />
+                        </span>
+
+                        <a href="" ng-if="tdata.images==null" id="uploadmulti_file_modal"
+                            ng-click="upladFileModal(tdata.id)">
+                            <span class="icon-common icon-table-details icon-file"></span>
+                        </a>
+                    </td>
+                    <td colspan="4"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="fileUpladModal">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Approval: Upload File</h3>
+
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                    </div>
+
+                    <form id="kt_ecommerce_settings_general_form" class="form"
+                        ng-submit="uploadImage(form.uploadFile,form.id)">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="fv-row mb-7">
+                                        <label class="fs-12 fw-semibold form-label mt-3"><span class=""><b>Upload
+                                                    File</b></span></label> <input type="file"
+                                            class="form-control form-control-solid" file-model="form.uploadFile"
+                                            name="filename">
+                                    </div>
+                                    <input type="hidden" class="form-control form-control-solid" hidden
+                                        ng-model="form.id" placeholder=" Narration" name="Assets_No" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="imageViewModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" style="text-align: center;">Document
+                            View</h3>
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <img src="uploads/{{view_image}}"
+                            style="max-width: 100%; min-width: 100%; max-height: 70vh; min-height: 50vh"
+                            id="modalImage">
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/finance/claimsettlement.js"></script>

@@ -1,0 +1,158 @@
+<div th:replace="fragment/head"></div>
+<title>Country Master</title>
+<div th:replace="fragment/header"></div>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
+
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
+<div class="user-details-container" ng-app="LocationManagment" ng-controller="CountryController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeCompany}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Country Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Country Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Country Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addEditCountry()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Country Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Sort Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="sortName" type="text" ng-model="form.sortName" class="form-control"
+                                    placeholder="Enter Sort Name"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Edit Customer Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addEditCountry()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Country Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Sort Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="sortName" type="text" ng-model="form.sortName" class="form-control"
+                                    placeholder="Enter Sort Name"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Country Name</th>
+                        <th>Sort Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr ng-repeat="country in countries | filter:search" class="master-list row-red">
+                        <td>{{$index + 1}}</td>
+                        <td><span class="user-role">{{country.name}}</span></td>
+                        <td><span class="user-role">{{country.sortName}}</span></td>
+                        <td>
+                            <form method="POST" class="content-center" ng-if="country.status==false">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="countryActivation(country.id)" ng-model="country.status"
+                                        name="enabled" checked=""> <span class="knob"></span>
+                                </label>
+                            </form>
+                            <form method="POST" class="content-center" ng-if="country.status==true">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="countryDeactivation(country.id)" ng-model="country.status"
+                                        name="status" checked=""> <span class="knob"></span>
+                                </label>
+
+                            </form>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit">
+                                    <span class="icon-common icon-action icon-edit-new"
+                                        ng-click="editCountry(country.id)" onclick="openMasterEditview(this)"></span>
+                                </span>
+                                <!-- <span class="btn-action btn-icon btn-trash">
+                                    <span class="icon-common icon-action icon-trash"
+                                        ng-click="deleteCustomer(customer.id)" title="Delete"></span>
+                                </span> -->
+                            </div>
+            </div>
+            </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/parent/location.js"></script>

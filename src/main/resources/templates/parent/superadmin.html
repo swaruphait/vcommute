@@ -1,0 +1,601 @@
+<div th:replace="fragment/head"></div>
+<title>Superadmin Master</title>
+<div th:replace="fragment/header"></div>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
+
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
+
+<div ng-app="CompanyManagment" ng-controller="SuperAdminController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeCompany}"><span
+                            class="icon-common icon-title-dashboard"></span> Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Superadmin</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="body-area" ng-show="views.list">
+        <div class="body-area-header">
+            <div class="row align-items-center">
+                <div class="page-header mb-0">
+                    <span class="header-line"></span>
+                    <span class="lbl-page-header">Superadmin Master</span>
+                    <span class="header-line"></span>
+                </div>
+                <div class="page-action-container mb-0">
+                    <div class="page-action-start-container align-items-center">
+                        <form>
+                            <input class="form-control" type="search" ng-model="search"
+                                placeholder="Search Superadmin..." aria-label="Search">
+                            <span class="icon-common icon-form icon-search"></span>
+                        </form>
+                    </div>
+                    <button type="button" class="btn btn-page-action btn-new-bookings" data-bs-toggle="modal"
+                        data-bs-target="#newSuperadmin" ng-click="openNewSuperadmin()">
+                        <span class="icon-common icon-page-action icon-add-circle"></span>
+                        <span class="lbl-page-action">Add SuperAdmin</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="body-area-content">
+            <div class="user-table-container">
+                <table class="user-table-view" id="">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="admin in superadmin | filter:search">
+                        <tr class="row-red">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{admin.name}}</span></td>
+                            <td><span class="user-role">{{admin.companyName}}</span></td>
+                            <td><span class="user-role">{{admin.username}}</span></td>
+                            <td><span class="user-role">{{admin.role}}</span></td>
+                            <td><span class="user-role">{{admin.mobile}}</span></td>
+                            <td><span class="user-role">{{admin.email}}</span></td>
+                            <td>
+                                <form method="POST" class="content-center" ng-if="admin.enabled==false">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="userActivation(admin.id)" ng-model="admin.enabled" name="enabled"
+                                            checked=""> <span class="knob"></span>
+                                    </label>                                
+                                </form>
+                                <form method="POST" class="content-center" ng-if="admin.enabled==true">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="userDeactivation(admin.id)" ng-model="admin.enabled" name="status"
+                                            checked=""> <span class="knob"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td>
+                                <span class="btn-action btn-icon btn-edit">
+                                    <span class="icon-common icon-action icon-edit-new" data-bs-toggle="modal"
+                                    data-bs-target="#editSuperadmin" ng-click="openEditSuperadmin(admin.id)"
+                                        onclick="openMasterEditview(this)"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <!-- ***********************ADD SUPERADMIN MODAL START************************* -->
+            <div class="modal fade modal-custom" id="newSuperadmin" tabindex="-1" aria-labelledby="newRestaurantLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">
+                                <span class="icon-common icon-modal-header icon-add-circle"></span>
+                                <span>Add SuperAdmin</span>
+                            </h1>
+                        </div>
+                        <div class="modal-body">
+                            <form autocomplete="off" class="reg-form row g-3" ng-submit="addSaveSuperAdmin()">
+                                <div class="col-lg-12 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                        Name</label>
+                                    <input name="name" type="text" ng-model="form.name" class="form-control"
+                                        placeholder="Enter Name"
+                                        oninvalid="this.setCustomValidity('Please enter valid name')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Username:</label>
+                                    <input name="username" type="text" ng-model="form.username" class="form-control"
+                                        ng-change="checkUserNameAvailability(form.username)" pattern="^[^\s]+$"
+                                        placeholder="Enter Username" autocomplete="off"
+                                        oninvalid="this.setCustomValidity('Username should not contain spaces')"
+                                        oninput="this.setCustomValidity('')" required />
+                                    <span style="color: red;display: none;" id="user-name-error">Username already exist!
+                                        Please
+                                        try another
+                                        one</span>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Email
+                                        Id:</label>
+                                    <input name="email" type="email" ng-model="form.email" class="form-control"
+                                        ng-change="checkEmailAvailability(form.email)" placeholder="Enter Email"
+                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                        oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                        oninput="this.setCustomValidity('')" required />
+                                    <span style="color: red;display: none;" id="email-error">Email already exist! Please
+                                        try
+                                        another
+                                        one</span>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Password:
+                                    </label>
+                                    <input name="password" type="password" ng-model="form.rawPassword"
+                                        class="form-control" id="idPassword" placeholder="Enter Password"
+                                        oninvalid="this.setCustomValidity('Please Enter Password')"
+                                        oninput="this.setCustomValidity('')" required />
+                                    <!-- <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"
+                            ng-click="togglePassword()" style="position: relative; left: 90%; top: -40%;"></span> -->
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Phone:</label>
+                                    <input name="mobile" type="number" ng-model="form.mobile" min="0" step="1"
+                                        pattern="[0-9]{10}" class="form-control" placeholder="Enter Phone No"
+                                        oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Company:
+                                    </label>
+                                    <select name="role" ng-model="form.superCompanyId" class="form-control select2"
+                                        oninvalid="this.setCustomValidity('Please Select Company')"
+                                        oninput="this.setCustomValidity('')" required>
+                                        <option value="" disabled selected>Select Option-</option>
+                                        <option ng-repeat="company in companies" value="{{company.id}}"
+                                            ng-selected="form.superCompanyId == company.id">{{company.name}}</option>
+                                    </select>
+                                </div>
+                                <div class="btn-container text-start">
+                                    <input type="submit" class="btn btn-submit mt-3" value="SUBMIT">
+                                    <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ************************ADD SUPERADMIN MODAL END******************** -->
+
+
+            <!-- ***********************EDIT SUPERADMIN MODAL START************************* -->
+            <div class="modal fade modal-custom" id="editSuperadmin" tabindex="-1" aria-labelledby="newRestaurantLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">
+                                <span class="icon-common icon-modal-header icon-add-circle"></span>
+                                <span>Add SuperAdmin</span>
+                            </h1>
+                        </div>
+                        <div class="modal-body">
+                            <form autocomplete="off" class="reg-form row g-3" ng-submit="addSaveSuperAdmin()">
+                                <div class="col-lg-12 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                        Name</label>
+                                    <input name="name" type="text" ng-model="form.name" class="form-control"
+                                        placeholder="Enter Name"
+                                        oninvalid="this.setCustomValidity('Please enter valid name')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Username:</label>
+                                    <input name="username" type="text" ng-model="form.username" class="form-control"
+                                        ng-change="checkUserNameAvailability(form.username)" pattern="^[^\s]+$"
+                                        placeholder="Enter Username" autocomplete="off"
+                                        oninvalid="this.setCustomValidity('Username should not contain spaces')"
+                                        oninput="this.setCustomValidity('')" required />
+                                    <span style="color: red;display: none;" id="user-name-error">Username already exist!
+                                        Please
+                                        try another
+                                        one</span>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Email
+                                        Id:</label>
+                                    <input name="email" type="email" ng-model="form.email" class="form-control"
+                                        ng-change="checkEmailAvailability(form.email)" placeholder="Enter Email"
+                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                        oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                        oninput="this.setCustomValidity('')" required />
+                                    <span style="color: red;display: none;" id="email-error">Email already exist! Please
+                                        try
+                                        another
+                                        one</span>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger"></span>Password:
+                                    </label>
+                                    <input name="password" type="password" ng-model="form.rawPassword"
+                                        class="form-control" id="idPassword" placeholder="Enter Password"
+                                        oninvalid="this.setCustomValidity('Please Enter Password')"
+                                        oninput="this.setCustomValidity('')" />
+                                    <!-- <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"
+                                         ng-click="togglePassword()" style="position: relative; left: 90%; top: -40%;"></span> -->
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Phone:</label>
+                                    <input name="mobile" type="number" ng-model="form.mobile" min="0" step="1"
+                                        pattern="[0-9]{10}" class="form-control" placeholder="Enter Phone No"
+                                        oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <label for="exampleInputName" class="form-label"><span
+                                            class="text-danger">*</span>Company:
+                                    </label>
+                                    <select name="role" ng-model="form.superCompanyId" class="form-control select2"
+                                        oninvalid="this.setCustomValidity('Please Select Company')"
+                                        oninput="this.setCustomValidity('')" required>
+                                        <option value="" disabled selected>Select Option-</option>
+                                        <option ng-repeat="company in companies" value="{{company.id}}"
+                                            ng-selected="form.superCompanyId == company.id">{{company.name}}</option>
+                                    </select>
+                                </div>
+                                <div class="btn-container text-start">
+                                    <input type="submit" class="btn btn-submit mt-3" value="SUBMIT">
+                                    <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ************************ADD SUPERADMIN MODAL END******************** -->
+        </div>
+    </div>
+
+    <!-- <div class="body-area" ng-show="views.edit">
+        <div class="body-area-header">
+            <div class="row align-items-center">
+                <div class="page-header mb-0">
+                    <span class="header-line"></span>
+                    <span class="lbl-page-header">Edit Super Admins</span>
+                    <span class="header-line"></span>
+                </div>
+                <div class="page-action-container justify-content-end mb-2">
+                    <div class="page-action-end-container align-items-center me-2">
+                        <div class="body-area-action">
+                            <a ng-click="changeView('list')" class="float-end btn btn-icon btn-back me-2"
+                                title="Return"><span class="icon-common icon-back icon-btn-circle"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="body-area-content">
+            <div class="add-form-container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <form class="reg-form row g-3" name="addAdmin" role="form" ng-submit="editSaveAdmin()">
+                            <div class="col-lg-12 col-md-12">
+                                <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                    Name</label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Name"
+                                    oninvalid="this.setCustomValidity('Please enter valid name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label"><span
+                                        class="text-danger">*</span>Username:</label>
+                                <input name="username" type="text" ng-model="form.username" class="form-control"
+                                    placeholder="Enter Username" autocomplete="off" ng-disabled=true
+                                    oninvalid="this.setCustomValidity('Username should not contain spaces')"
+                                    oninput="this.setCustomValidity('')" required />
+
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Email
+                                    Id:</label>
+                                <input name="email" type="email" ng-model="form.email" class="form-control"
+                                    placeholder="Enter Email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                    oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                    oninput="this.setCustomValidity('')" required />
+                                </span>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label for="exampleInputName" class="form-label"><span
+                                        class="text-danger">*</span>Password: </label>
+                                <input name="password" type="password" ng-model="form.password" class="form-control"
+                                    id="idPassword" placeholder="**************" />
+                                <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"
+                                    oninvalid="this.setCustomValidity('Please enter password properly')"
+                                    oninput="this.setCustomValidity('')"></span>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="exampleInputName" class="form-label"><span
+                                        class="text-danger">*</span>Phone:</label>
+                                <input name="mobile" type="text" ng-model="form.mobile" class="form-control"
+                                    placeholder="Enter Phone No" min="0" step="1" pattern="[0-9]{10}"
+                                    oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <label for="exampleInputName" class="form-label"><span
+                                        class="text-danger">*</span>Company: </label>
+                                <select name="role" ng-model="form.superCompanyId" class="form-control select2"
+                                    oninvalid="this.setCustomValidity('Please select company')" ng-disabled=true
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="" disabled selected>Select Option-</option>
+                                    <option ng-repeat="company in companies" value="{{company.id}}"
+                                        ng-selected="form.superCompanyId == company.id">{{company.name}}</option>
+                                </select>
+                            </div>
+                            <div class="btn-container text-start">
+                                <input type="submit" class="btn btn-submit mt-3" value="SUBMIT">
+                                <input type="reset" class="btn btn-cancel me-4 mt-3" ng-click="refresh()"
+                                    value="CANCEL">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- <div class="body-area" ng-show="views.subscription ">
+        <div class="body-area-header">
+            <div class="row align-items-center mb-0">
+                <div class="page-header">
+                    <span class="header-line"></span>
+                    <span class="lbl-page-header">Subscriptions({{companyName}})</span>
+                    <span class="header-line"></span>
+                </div>
+                <div class="page-action-container justify-content-end mb-2">
+                    <div class="page-action-end-container align-items-center me-2">
+                        <div class="body-area-action">
+                            <a ng-click="changeView('list')" class="float-end btn btn-icon btn-back me-2"
+                                title="Return"><span class="icon-common icon-back icon-btn-circle"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body-area-content">
+                <div class="user-table-container">
+                    <table class="user-table-view" id="">
+                        <tr class="table-head-primary">
+                            <th>SL No.</th>
+                            <th>Name</th>
+                            <th>Max Company Add</th>
+                            <th>Max Employee Add</th>
+                            <th>Other Access</th>
+                            <th>Price</th>
+                            <th>Validity</th>
+                            <th>Status</th>
+                            <th>Plan Request</th>
+                            <th>Action</th>
+                            <div class="spinner-wrapper" id="loader" style="display: none;">
+                                <div class="spinner">
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                        </tr>
+                        <tr ng-repeat="subscription in subscriptions">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{subscription.planName}}</span></td>
+                            <td><span class="user-role">{{subscription.maxCompanyAdd}}</span></td>
+                            <td><span class="user-role">{{subscription.maxEmployeeAdd}}</span></td>
+                            <td>
+                                <div class="user-details">
+                                    <div class="user-details">
+                                        <span class="user-details-caption">Commute Access: </span>
+                                        <span class="user-details-value">{{subscription.commuteAccess==true ? "Yes" :
+                                            "No"}}</span>
+                                    </div>
+                                    <div class="user-details">
+                                        <span class="user-details-caption">Live Tracking Access: </span>
+                                        <span class="user-details-value">{{subscription.trackingAccess==true ? "Yes" :
+                                            "No"}}</span>
+                                    </div>
+                                    <div class="user-details">
+                                        <span class="user-details-caption">Finnace Access: </span>
+                                        <span class="user-details-value">{{subscription.finnaceAccess==true ? "Yes" :
+                                            "No"}}</span>
+                                    </div>
+                                </div>
+                            <td><span class="user-role">{{subscription.price}}</span></td>
+                            <td><span class="user-role">{{subscription.validity}} Year</span></td>
+                            <td>
+                                <form method="POST" class="content-center">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch">
+                                        <input class="user" type="checkbox" data-id="2"
+                                            ng-click="changeSubscriptionStatus(subscription.id)"
+                                            ng-model="subscription.status" name="status" checked="">
+                                        <span class="knob"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" class="content-center">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch">
+                                        <input class="user" type="checkbox" data-id="2"
+                                            ng-model="subscription.planRequest" name="status" checked="" disabled>
+                                        <span class="knob"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-icon btn-option" href="#" role="button" id="userActionOption"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="icon-common icon-option icon-btn-circle"></span>
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="userActionOption">
+                                        <li ng-if="subscription.editable==true"><a class="dropdown-item"
+                                                ng-click="editSubscription(subscription.id)"><span
+                                                    class="icon-common icon-dropdown icon-write"></span><span>Edit</span></a>
+                                        </li>
+                                        <li ng-if="subscription.status==true"><a class="dropdown-item"
+                                                ng-click="extendSubscription(subscription.id)"><span
+                                                    class="icon-common icon-dropdown icon-write"></span><span>Extension</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <table class="user-table-view" style="margin-top: 13px;">
+                        <tr ng-if="expiry_state == 1" style="border: 1px solid #ff0404;">
+                            <td colspan="3" style="text-align: right;">Start Date: {{start_date}}</td>
+                            <td colspan="3">End Date: {{end_date}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div> -->
+
+    <!-- <div class="body-area" ng-show="views.subscriptionEdit">
+            <div class="body-area-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="body-area-tittle">
+                            <span class="icon-common icon-edit-new icon-header"></span>
+                            <span>Edit Custom Subscription({{companyName}})</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="body-area-action">
+                            <a ng-click="changeView('list')" class="float-end btn btn-icon btn-back me-2"
+                                title="Return"><span class="icon-common icon-back icon-btn-circle"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body-area-content">
+                <div class="add-form-container">
+                    <form class="form-horizontal" name="addAdmin" role="form" ng-submit="editSaveSubscription()">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Plan Name: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="planName" type="text" ng-model="subscriptionsForm.planName"
+                                        class="form-control" placeholder="Enter Plan Name" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Company: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="company" type="number" ng-model="subscriptionsForm.company"
+                                        class="form-control" placeholder="Enter Company" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Employee: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="employee" type="number" ng-model="subscriptionsForm.employee"
+                                        class="form-control" placeholder="Enter Employee" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Asset: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="asset" type="number" ng-model="subscriptionsForm.asset"
+                                        class="form-control" placeholder="Enter Asset" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Price: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="price" type="number" ng-model="subscriptionsForm.price"
+                                        class="form-control" placeholder="Enter Price" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Validity(Year): <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="price" type="number" ng-model="subscriptionsForm.validity"
+                                        class="form-control" placeholder="Enter Price" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Note: <span class="text-danger">*</span>
+                                    </label>
+                                    <input name="note" type="text" ng-model="subscriptionsForm.note"
+                                        class="form-control" placeholder="Enter Note" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-lg-12 col-sm-6">
+                                <div class="form-group" style="text-align:center;">
+
+                                    <button type="reset" class="btn btn-outline-danger"><i class="fa fa-ban"></i> Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-outline-primary"><i
+                                            class="fa fa-check-circle"></i>Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div> -->
+</div>
+
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/parent/superadmin.js"></script>

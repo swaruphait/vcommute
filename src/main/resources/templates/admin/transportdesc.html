@@ -1,0 +1,187 @@
+<div th:replace="fragment/head"></div>
+<title>Role Master</title>
+<div th:replace="fragment/header"></div>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
+
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
+<div class="user-details-container" ng-app="SuperAdminManagment" ng-controller="TransportDescController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Transport Description</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Transport Description</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Transport Description</div>
+                </div>
+                <form ng-submit="addSaveTransportDesc()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Transport Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.des" class="form-control"
+                                    placeholder="Enter Transport Name" ng-change="form.des = (form.des | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Entry Transport Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Document Required: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.documentRequired" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Document Requirements')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Price Required: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.priceRequired" id="price" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Price Requirements')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">Select Option-</option>
+                                    <option value="true">Yes-</option>
+                                    <option value="false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT Transport Description</div>
+                </div>
+                <form ng-submit="addSaveTransportDesc()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Transport Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.des" class="form-control"
+                                    placeholder="Enter Transport Name" ng-change="form.des = (form.des | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Entry Transport Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Document Required: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.documentRequired" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Document Requirements')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="" ng-selected="form.documentRequired === ''">Select Option-</option>
+                                    <option value="true" ng-selected="form.documentRequired === true">Yes-</option>
+                                    <option value="false" ng-selected="form.documentRequired === false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Price Required: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.priceRequired" id="price" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Price Requirements')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="" ng-selected="form.priceRequired === ''">Select Option-</option>
+                                    <option value="true" ng-selected="form.priceRequired === true">Yes-</option>
+                                    <option value="false" ng-selected="form.priceRequired === false">No-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">UPDATE</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search Transport Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Transport Name</th>
+                        <th>Company Name</th>
+                        <th>Document Required</th>
+                        <th>Price Required</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="transDesc in transDescs | filter:search" class="master-list">
+                        <tr class="row-red">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{transDesc.des}}</span></td>
+                            <td><span class="user-role">{{transDesc.companyName}}</span></td>
+                            <td><span class="user-role">{{transDesc.documentRequired == true ? "Yes" : "No"}}</span>
+                            </td>
+                            <td><span class="user-role">{{transDesc.priceRequired == true ? "Yes" : "No"}}</span></td>
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-edit">
+                                        <span class="icon-common icon-action icon-edit-new"
+                                            ng-click="editTransportDesc(transDesc.id)"
+                                            onclick="openMasterEditview(this)"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/transportdesc.js"></script>

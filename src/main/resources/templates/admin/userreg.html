@@ -1,0 +1,236 @@
+<div th:replace="fragment/head"></div>
+<title>Users Registration</title>
+<div th:replace="fragment/header"></div>
+<div class="row user-reg-container mt-5" ng-app="AdminManagment" ng-controller="UserController">
+    <div class="col-xl-5 col-lg-12 reg-image-container">
+        <img src="assets/images/user-reg.png" alt="" class="w-100">
+        <div>
+            <span class="lbl-user-reg-secondary">Welcome To</span>
+            <span class="lbl-user-reg-primary">Users Registration</span>
+        </div>
+    </div>
+    <div class="col-xl-7 col-lg-12 reg-form-container">
+        <div class="lbl-user-reg-sub-header">Users</div>
+        <div class="lbl-user-reg-header">Registration</div>
+        <div class="spinner-wrapper" id="loader" style="display: none;">
+            <div class="spinner">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        <form autocomplete="off" class="reg-form row g-3" ng-submit="addSaveEmployee()">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="name"> Name: <span
+                                class="text-danger">*</span>
+                        </label> <input name="name" type="text" ng-model="form.name"
+                            class="form-control" placeholder="Enter Name"
+                            oninvalid="this.setCustomValidity('Please enter valid name')"
+                            oninput="this.setCustomValidity('')" required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Username: <span class="text-danger">*</span>
+                        </label> <input name="username" type="text" ng-model="form.username"
+                            class="form-control" ng-change="checkUserNameAvailability(form.username)"
+                            placeholder="Enter UserName" pattern="^[^\s]+$"
+                            oninvalid="this.setCustomValidity('Username should not contain spaces')"
+                            oninput="this.setCustomValidity('')" required /> <span
+                            style="color: red; display: none;" id="user-name-error">Username
+                            already exist! Please try another one</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group position-relative">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Password: <span class="text-danger">*</span>
+                        </label> <input name="password" type="password" ng-model="form.rawPassword"
+                            class="form-control" id="idPassword" placeholder="******" required />
+                        <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"
+                            ng-click="togglePassword()"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Email: <span class="text-danger">*</span>
+                        </label> <input name="email" type="email" ng-model="form.email"
+                            class="form-control" placeholder="Enter Email"
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                            oninvalid="this.setCustomValidity('Please enter valid email id')"
+                            oninput="this.setCustomValidity('')" required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Phone No: <span class="text-danger">*</span>
+                        </label> <input name="phone" type="text" ng-model="form.mobile"
+                            class="form-control" placeholder="Enter Phone No" pattern="[0-9]{10}"
+                            oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                            oninput="this.setCustomValidity('')" required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-dark lbl-medium form-label" for="planName">
+                        State: <span class="text-danger">*</span>
+                        <select name="state" ng-model="form.stateId" class="form-control select2"
+                            ng-options="state.id as state.name for state in states"
+                            ng-change="fetchCityName(form.stateId)"
+                            oninvalid="this.setCustomValidity('Please Select State')"
+                            oninput="this.setCustomValidity('')" required>
+                            <option value="" disabled selected>Select Option-</option>
+                        </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Location: <span class="text-danger">*</span>
+                        </label> <select name="jobRoleId" ng-model="form.locationId"
+                            class="form-control select2"
+                            ng-options="location.id as location.city for location in locations"
+                            oninvalid="this.setCustomValidity('Please Select Location')"
+                            oninput="this.setCustomValidity('')" required>
+                            <option value disabled selected="selected">-Select
+                                Location-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Role: <span class="text-danger">*</span>
+                        </label>
+                        <select name="role" ng-model="form.role" class="form-control select2"
+                            ng-options="role.access as role.name for role in roles"
+                            oninvalid="this.setCustomValidity('Please Select Role')"
+                            oninput="this.setCustomValidity('')" required>
+                            <option value disabled selected="selected">-Select User Role-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="form-group">
+                        <label for="inputState" class="text-dark lbl-medium">Department <span
+                                class="alert-danger" ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">*</span></label>
+                        <select ng-model="form.deptId" class="form-select"
+                            ng-required="form.role != 'ADMIN' && form.role != 'FINANCE'"
+                            ng-change="fetchDesignation(form.deptId)">
+                            <option value="" disabled selected>Select Option-</option>
+                            <option ng-repeat="dept in department" value="{{ dept.id }}">{{ dept.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="form-group">
+                        <label for="inputState" class="text-dark lbl-medium">Designation <span
+                                class="alert-danger" ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">*</span></label>
+                        <select ng-model="form.designationId" class="form-select"
+                            ng-required="form.role != 'ADMIN' && form.role != 'FINANCE'">
+                            <option value="" disabled selected>Select Option-</option>
+                            <option ng-repeat="desi in designation" value="{{ desi.id }}">{{ desi.name
+                                }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="form-group">
+                        <label for="inputState" class="text-dark lbl-medium">Approval Level <span
+                                class="alert-danger" ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">*</span></label>
+                        <select ng-model="form.approvalLevelId" class="form-select"
+                            ng-required="form.role != 'ADMIN' && form.role != 'FINANCE'">
+                            <option value="" disabled selected>Select Option-</option>
+                            <option ng-repeat="level in appvlLevel" value="{{ level.id }}">{{level.title}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Qualification: <span class="text-danger"
+                                ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">*</span>
+                        </label> <input name="qualification" type="text" ng-model="form.qualification"
+                            class="form-control" placeholder="Enter Qualification"
+                            oninvalid="this.setCustomValidity('Please enter Qualification')"
+                            oninput="this.setCustomValidity('')" ng-required="form.role != 'ADMIN' && form.role != 'FINANCE'" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="name"> Employee
+                            Id: <span class="text-danger" ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">*</span></label>
+                        <input name="employeeId" type="text" ng-model="form.employeeId"
+                            class="form-control" placeholder="Enter Employee Id"
+                            ng-required="form.role != 'ADMIN' && form.role != 'FINANCE'" />
+                    </div>
+                </div>
+                <div class="col-md-4" ng-if="form.role != 'ADMIN' && form.role != 'FINANCE'">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName">
+                            Grade: <!-- <span class="text-danger">*</span> -->
+                        </label> <select name="gradeId" ng-model="form.gradeId"
+                            class="form-control select2"
+                            ng-options="grade.gradeId as grade.gradeName for grade in grades"
+                            ng-click="fetchEmployeeGrade()">
+                            <option value disabled selected="selected">-Select
+                                Grade-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4" ng-hide="form.role == 'ADMIN'">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName"> Bank
+                            Name: <!-- <span class="text-danger">*</span> -->
+                        </label> <input name="bankame" type="text" ng-model="form.bankName"
+                            class="form-control select2" placeholder="Enter Bank Name">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName"> A/C
+                            <!-- No: <span class="text-danger">*</span> -->
+                        </label> <input name="bankAccountNo" type="text" ng-model="form.bankAccountNo"
+                            class="form-control" placeholder="Enter Bank AC No"> </select>
+                    </div>
+                </div>
+                <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName"> IFSC
+                            Code: <!-- <span class="text-danger">*</span> -->
+                        </label> <input type="text" name="bankIFSCCode" ng-model="form.bankIFSCCode"
+                            class="form-control" placeholder="Enter IFSC Code"> </select>
+                    </div>
+                </div>
+                <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                    <div class="form-group">
+                        <label class="text-dark lbl-medium" for="planName"> Bank
+                            Type: <!-- <span class="text-danger">*</span> -->
+                        </label> <select name="bankType" ng-model="form.bankType"
+                            class="form-control select2">
+                            <option value disabled selected="selected">-Select
+                                Bank Type-</option>
+                            <option value="ICICI Bank">ICICI Bank</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-container text-start">
+                    <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                    <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/user.js"></script>

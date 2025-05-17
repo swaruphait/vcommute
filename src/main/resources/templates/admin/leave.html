@@ -1,0 +1,175 @@
+<div th:replace="fragment/head"></div>
+<title>Designation Master</title>
+<div th:replace="fragment/header"></div>
+<div ng-app="SuperAdminManagment" ng-controller="LeaveMasterController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Leave Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">ADD LEAVE MASTER</div>
+                </div>
+                <form ng-submit="addLeaveList()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Leave Type: <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" ng-change="form.typeName = (form.typeName | uppercase)"
+                                    ng-model="form.typeName" ng-init="form.typeName=form.typeName" class="form-control"
+                                    aria-describedby="fullNameHelp" placeholder="Enter Leave Type" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    No Of Leave: <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" min="1" max="300" ng-model="form.noOfLeave" class="form-control"
+                                    aria-describedby="fullNameHelp" placeholder="Enter No Of Leave" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Carry Forward: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.carry" class="form-control select2"
+                                    oninvalid="this.setCustomValidity('Please Options')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value disabled selected="selected">-Select Options-</option>
+                                    <option value="true">-Yes-</option>
+                                    <option value="false">-No-</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-container ">
+                            <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                            <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()">CANCEL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT LEAVE MASTER</div>
+                </div>
+                <form ng-submit="addLeaveList()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Leave Type: <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" ng-change="form.typeName = (form.typeName | uppercase)"
+                                    ng-model="form.typeName" ng-init="form.typeName=form.typeName" class="form-control"
+                                    aria-describedby="fullNameHelp" placeholder="Enter Leave Type" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    No Of Leave: <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" min="1" max="300" ng-model="form.noOfLeave" class="form-control"
+                                    aria-describedby="fullNameHelp" placeholder="Enter No Of Leave" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Carry Forward: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.carry" class="form-control select2"
+                                    oninvalid="this.setCustomValidity('Please Options')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value disabled selected="selected">-Select Options-</option>
+                                    <option ng-value="true">-Yes-</option>
+                                    <option ng-value="false">-No-</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-container ">
+                            <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                            <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()">CANCEL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search Leave Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th class="text-start">
+                            <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                        </th>
+                        <th>Leave Type</th>
+                        <th>No Of Leave</th>
+                        <th>Carry Forward</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="leave in leaveList | filter:search" class="master-list">
+
+                        <tr class="row-red">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                                </div>
+                            </td>
+                            <td>{{leave.typeName}}</td>
+                            <td>{{leave.noOfLeave}}</td>
+                            <td>{{leave.carry ? 'Yes' : 'No'}}</td>
+                            <td>
+                                <form method="POST" class="content-center" ng-if="leave.status==false">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="activeLeave(leave.id)" ng-model="leave.status" name="status"
+                                            checked=""> <span class="knob"></span>
+                                    </label>
+                                </form>
+                                <form method="POST" class="content-center" ng-if="leave.status==true">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="deactiveLeave(leave.id)" ng-model="leave.status" name="status"
+                                            checked=""> <span class="knob"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-edit">
+                                        <span class="icon-common icon-action icon-edit-new"
+                                            ng-click="editLeaveList(leave.id)"
+                                            onclick="openMasterEditview(this)"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/leave.js"></script>

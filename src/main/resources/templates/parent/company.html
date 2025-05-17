@@ -1,0 +1,579 @@
+<div th:replace="fragment/head"></div>
+<title>Company</title>
+<div th:replace="fragment/header"></div>
+
+
+<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
+
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
+<!-- =============================================================== -->
+<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
+
+<div ng-app="CompanyManagment" ng-controller="SuperCompanyController">
+    <div class="body-area mt-3" ng-show="views.list">
+        <div class="body-area-header">
+            <div class="row align-items-center">
+                <div class="page-header mb-3">
+                    <span class="header-line"></span>
+                    <span class="lbl-page-header">Company Details</span>
+                    <span class="header-line"></span>
+                </div>
+                <div class="page-action-container  justify-content-between mb-0">
+                    <div class="page-action-start-container align-items-center">
+                        <form>
+                            <input class="form-control" type="search" ng-model="search" placeholder="Search Customer..."
+                                aria-label="Search">
+                            <span class="icon-common icon-form icon-search"></span>
+                        </form>
+                    </div>
+                    <button type="button" class="btn btn-page-action btn-new-bookings" data-bs-toggle="modal"
+                        data-bs-target="#newCompany" ng-click="openNewCompany()">
+                        <span class="icon-common icon-page-action icon-add-circle"></span>
+                        <span class="lbl-page-action">Add Company</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="body-area-content">
+            <div class="user-table-container">
+                <table class="user-table-view" id="">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Company Name</th>
+                        <th class="align-left">Contact Details</th>
+                        <th class="align-left">Subcription Details</th>
+                        <th>Address</th>
+                        <th>Access Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <div class="spinner-wrapper" id="loader" style="display: none;">
+                        <div class="spinner">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <tbody ng-repeat="company in compines | filter:search">
+
+                        <tr class="row-red">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{company.name}}</span></td>
+                            <td class="align-left">
+                                <strong>Mobile: </strong>{{company.mobile}} <br>
+                                <strong>Email: </strong>{{company.email}} <br>
+                                <strong>Website: </strong>{{company.website}}
+
+                            </td>
+                            <td class="align-left">
+                                <strong>Plan Name: </strong>{{company.subscriptionData.planName}} <br>
+                                <strong>Expire Date: </strong>{{company.subscriptionData.endDate | date:'dd MMMM yyyy'}}
+                                <br>
+                                <strong>User Limit: </strong>{{company.subscriptionData.addNoOfUser}} <br>
+                                <strong>Company Limit: </strong>{{company.subscriptionData.addNoOfCompany}} <br>
+                                <strong>Access: </strong> <span ng-if="company.subscriptionData.commuteAccess">Commute,
+                                </span>
+                                <span ng-if="company.subscriptionData.attendaceAccess">Attendance, </span>
+                                <span ng-if="company.subscriptionData.financeAccess">Finance, </span>
+                                <span ng-if="company.subscriptionData.leaveAccess">Leave, </span>
+                                <span ng-if="company.subscriptionData.biometricAttend">Face Recognization</span>
+                                <br>
+                            </td>
+                            <td>
+                                <strong>Address: </strong>{{company.address}} <br>
+                                <strong>City: </strong>{{company.city}}, <strong>State: </strong>{{company.state}},
+                                <strong>Country: </strong>{{company.country}}
+
+                                <!-- <span class="user-role">{{company.address}}</span></td> -->
+                            </td>
+                            <td>
+                                <span class="user-role" ng-if="company.priviledgeType === 'A'">ATTENDANCE</span>
+                                <span class="user-role" ng-if="company.priviledgeType === 'C'">COMMUTE</span>
+                                <span class="user-role" ng-if="company.priviledgeType === 'B'">BOTH</span>
+                            </td>
+                            <td>
+                                <form method="POST" class="content-center" ng-if="company.status==false">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="countryActivation(company.id)" ng-model="company.status"
+                                            name="enabled" checked=""> <span class="knob"></span>
+                                    </label>
+                                </form>
+                                <form method="POST" class="content-center" ng-if="company.status==true">
+                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                            ng-click="countryDeactivation(company.id)" ng-model="company.status"
+                                            name="status" checked=""> <span class="knob"></span>
+                                    </label>
+
+                                </form>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-icon btn-option" href="#" role="button" id="userActionOption"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="icon-common icon-option icon-btn-circle"></span>
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="userActionOption">
+                                        <li><a class="dropdown-item" data-bs-toggle="modal"
+                                                data-bs-target="#editCompany"
+                                                ng-click="openEditCompany(company.id)"><span
+                                                    class="icon-common icon-dropdown icon-write"></span><span>Edit</span></a>
+                                        </li>
+                                        <li><a class="dropdown-item" data-bs-toggle="modal"
+                                                data-bs-target="#editSubcription"
+                                                ng-click="openEditSubcription(company.subscriptionData.id)"><span
+                                                    class="icon-common icon-dropdown icon-write"></span><span>Subscription</span></a>
+                                        </li>
+                                        <!-- <li><a class="dropdown-item" ng-click="deleteCompany(company.id)"><span
+                                                class="icon-common icon-dropdown icon-trash"></span><span>Delete</span></a>
+                                    </li> -->
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ***********************ADD COMPANY MODAL START************************* -->
+    <div class="modal fade modal-custom" id="newCompany" tabindex="-1" aria-labelledby="newRestaurantLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                        <span class="icon-common icon-modal-header icon-add-circle"></span>
+                        <span>Add Company</span>
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" class="reg-form row g-3" ng-submit="addSuperCompany()">
+                        <div class="col-lg-12 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Name:</label>
+                            <input name="name" type="text" ng-model="form.name" class="form-control"
+                                placeholder="Enter Name"
+                                oninvalid="this.setCustomValidity('Please enter valid company name')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Phone
+                                Number:</label>
+                            <input name="mobile" type="tel" ng-model="form.mobile" pattern="[0-9]{10}"
+                                class="form-control" placeholder="Enter Mobile No."
+                                oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Email
+                                Id:</label>
+                            <input name="email" type="email" ng-model="form.email" class="form-control"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" placeholder="Enter Email"
+                                oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Country:</label>
+                            <select name="country" ng-model="form.countryId" class="form-control select2"
+                                ng-change="getStateCountryWise(form.countryId)"
+                                ng-options="country.id as country.name for country in countries"
+                                oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!countries || countries.length === 0"
+                                ng-class="{'disabled-bg': !countries || countries.length === 0}" required>
+                                <option value="" disabled selected>Select Country-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                State:</label>
+                            <select name="state" ng-model="form.stateId" class="form-control select2"
+                                ng-change="getCityStateWise(form.stateId)"
+                                ng-options="state.id as state.name for state in states"
+                                oninvalid="this.setCustomValidity('Please Select State')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!states || states.length === 0"
+                                ng-class="{'disabled-bg': !states || states.length === 0}" required>
+                                <option value="" disabled selected>Select State-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                City:</label>
+                            <select name="city" ng-model="form.cityId" class="form-control select2"
+                                ng-options="city.id as city.city for city in cites"
+                                oninvalid="this.setCustomValidity('Please Select CIty')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!cites || cites.length === 0"
+                                ng-class="{'disabled-bg': !cites || cites.length === 0}" required>
+                                <option value="" disabled selected>Select City-</option>
+                            </select>
+                            <!-- <input name="city" type="text" ng-model="form.city" class="form-control" placeholder="Enter City" /> -->
+                        </div>
+                        <!-- <div class="col-md-4">
+                    <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Type:</label>
+                    <select ng-model="form.priviledgeType"
+                    class="form-select" oninvalid="this.setCustomValidity('Please Select Application Access Type')"
+                    oninput="this.setCustomValidity('')" required>
+                    <option value="" disabled selected>Select Option-</option>
+                    <option value="A">Attendence</option>
+                    <option value="C">Commute</option>
+                    <option value="B">Both</option>
+                </select>
+                </div> -->
+
+
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Subcription Plan:</label>
+                            <select name="country" ng-model="form.planId" class="form-control select2"
+                                ng-change="stateListbyCountry()" ng-options="plan.id as plan.planName for plan in plans"
+                                oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!plans || plans.length === 0"
+                                ng-class="{'disabled-bg': !plans || plans.length === 0}" required>
+                                <option value="" disabled selected>Select Option-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label">Website:</label>
+                            <input name="website" type="text" ng-model="form.website" class="form-control"
+                                placeholder="Enter Website" />
+                        </div>
+                        <div class="col-md-12">
+                            <label for="exampleInputName" class="form-label">
+                                <span class="text-danger">*</span> Type:
+                            </label>
+                            <div class="d-flex flex-wrap">
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="ATTENDANCE" class="form-check-input"
+                                        ng-model="form.attendance"
+                                        ng-change="updatePrivilege('ATTENDANCE', form.attendance)">
+                                    <label for="ATTENDANCE" class="form-check-label">Attendance</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="COMMUTE" class="form-check-input" ng-model="form.commute"
+                                        ng-change="updatePrivilege('COMMUTE', form.commute)">
+                                    <label for="COMMUTE" class="form-check-label">Commute</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="FINANCE" class="form-check-input" ng-model="form.finance"
+                                        ng-change="updatePrivilege('FINANCE', form.finance)">
+                                    <label for="FINANCE" class="form-check-label">Finance</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="LEAVE" class="form-check-input" ng-model="form.leave"
+                                        ng-change="updatePrivilege('LEAVE', form.leave)">
+                                    <label for="LEAVE" class="form-check-label">Leave</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="FACE" class="form-check-input" ng-model="form.face"
+                                        ng-change="updatePrivilege('FACE', form.face)">
+                                    <label for="FACE" class="form-check-label">Face Recognition</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label for="exampleInputName" class="form-label">Address:</label>
+                            <textarea name="address" ng-model="form.address" class="form-control"
+                                placeholder="Enter Address"> </textarea>
+                        </div>
+                        <div class="btn-container text-start">
+                            <input type="submit" class="btn btn-submit mt-3" value="SUBMIT">
+                            <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ************************ADD COMPANY MODAL END******************** -->
+
+
+    <!-- ***********************ADD COMPANY MODAL START************************* -->
+    <div class="modal fade modal-custom" id="editSubcription" tabindex="-1" aria-labelledby="newRestaurantLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                        <span class="icon-common icon-modal-header icon-add-circle"></span>
+                        <span>Customize Subcription</span>
+                    </h1>
+                </div>
+                <div class="modal-body">
+
+                    <form class="reg-form row g-3" ng-submit="editSubcription()">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Plan Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="planName" type="text" ng-model="subcription.planName" class="form-control"
+                                    placeholder="Enter Plan Name"
+                                    oninvalid="this.setCustomValidity('Please enter plan name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">
+                                    Company Limit: <span class="text-danger">*</span></label>
+                                <input name="company" type="number" ng-model="subcription.addNoOfCompany"
+                                    class="form-control" placeholder="Enter Max Company Add" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter number of company can added')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Employee Limit:
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input name="employee" type="number" ng-model="subcription.addNoOfUser" class="form-control"
+                                placeholder="Enter Max Employee Add" min="0" step="1"
+                                oninvalid="this.setCustomValidity('Please  Enter Number of Employee can added')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="text-dark lbl-medium">Commute:
+                                <span class="text-danger">*</span></label>
+                            <select ng-model="subcription.commuteAccess" class="form-select"
+                                oninvalid="this.setCustomValidity('Please Select Commute Access')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="" disabled>Select Option</option>
+                                <option ng-value="true">Yes</option>
+                                <option ng-value="false">No</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Tracking:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="subcription.trackingAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Tracking Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="" disabled>Select Option</option>
+                                    <option ng-value="true">Yes</option>
+                                    <option ng-value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Finance:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="subcription.financeAccess" class="form-select"
+                                    oninvalid="this.setCustomValidity('Please Select Finance Access')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="" disabled>Select Option</option>
+                                    <option ng-value="true">Yes</option>
+                                    <option ng-value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Start Date:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control filter-date-picker" ng-model="subcription.startDate"
+                                    type="date" placeholder="dd-mm-yyy">
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">End Date:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input class="form-control filter-date-picker" ng-model="subcription.endDate"
+                                    type="date" placeholder="dd-mm-yyy">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="text-dark lbl-medium">Price:
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input name="company" type="number" min="0" step="1" ng-model="subcription.price"
+                                    class="form-control" placeholder="Enter Price"
+                                    oninvalid="this.setCustomValidity('Please Entry Price')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ************************ADD COMPANY MODAL END******************** -->
+
+
+    <!-- *****************************EDIT COMPANY************************************** -->
+    <div class="modal fade modal-custom" id="editCompany" tabindex="-1" aria-labelledby="newRestaurantLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                        <span class="icon-common icon-modal-header icon-add-circle"></span>
+                        <span>Edit Company</span>
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" class="reg-form row g-3" ng-submit="editSuperCompany()">
+                        <div class="col-lg-12 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Name:</label>
+                            <input name="name" type="text" ng-model="form.name" class="form-control"
+                                placeholder="Enter Name"
+                                oninvalid="this.setCustomValidity('Please enter valid company name')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Phone
+                                Number:</label>
+                            <input name="mobile" type="tel" ng-model="form.mobile" pattern="[0-9]{10}"
+                                class="form-control" placeholder="Enter Mobile No."
+                                oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>Email
+                                Id:</label>
+                            <input name="email" type="email" ng-model="form.email" class="form-control"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" placeholder="Enter Email"
+                                oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                oninput="this.setCustomValidity('')" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Country:</label>
+                            <select name="country" ng-model="form.countryId" class="form-control select2"
+                                ng-change="getStateCountryWise(form.countryId)"
+                                ng-options="country.id as country.name for country in countries"
+                                oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!countries || countries.length === 0"
+                                ng-class="{'disabled-bg': !countries || countries.length === 0}" required>
+                                <option value="" disabled selected>Select Country-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                State:</label>
+                            <select name="state" ng-model="form.stateId" class="form-control select2"
+                                ng-change="getCityStateWise(form.stateId)"
+                                ng-options="state.id as state.name for state in states"
+                                oninvalid="this.setCustomValidity('Please Select State')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!states || states.length === 0"
+                                ng-class="{'disabled-bg': !states || states.length === 0}" required>
+                                <option value="" disabled selected>Select State-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                City:</label>
+                            <select name="city" ng-model="form.cityId" class="form-control select2"
+                                ng-options="city.id as city.city for city in cites"
+                                oninvalid="this.setCustomValidity('Please Select CIty')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!cites || cites.length === 0"
+                                ng-class="{'disabled-bg': !cites || cites.length === 0}" required>
+                                <option value="" disabled selected>Select City-</option>
+                            </select>
+                            <!-- <input name="city" type="text" ng-model="form.city" class="form-control" placeholder="Enter City" /> -->
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span
+                                    class="text-danger">*</span>Type:</label>
+                            <select ng-model="form.priviledgeType" class="form-select"
+                                oninvalid="this.setCustomValidity('Please Select Application Access Type')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="" disabled selected>Select Option-</option>
+                                <option value="A">Attendence</option>
+                                <option value="C">Commute</option>
+                                <option value="B">Both</option>
+                            </select>
+                        </div> -->
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label"><span class="text-danger">*</span>
+                                Subcription Plan:</label>
+                            <select name="country" ng-model="form.planId" class="form-control select2"
+                                ng-change="stateListbyCountry()" ng-options="plan.id as plan.planName for plan in plans"
+                                oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" ng-disabled="!plans || plans.length === 0"
+                                ng-class="{'disabled-bg': !plans || plans.length === 0}" required>
+                                <option value="" disabled selected>Select Option-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleInputName" class="form-label">Website:</label>
+                            <input name="website" type="text" ng-model="form.website" class="form-control"
+                                placeholder="Enter Website" />
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="ATTENDANCE" class="form-check-input"
+                                    ng-model="form.attendance"
+                                    ng-change="updatePrivilege('ATTENDANCE', form.attendance)">
+                                <label for="ATTENDANCE" class="form-check-label">Attendance</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="COMMUTE" class="form-check-input" ng-model="form.commute"
+                                    ng-change="updatePrivilege('COMMUTE', form.commute)">
+                                <label for="COMMUTE" class="form-check-label">Commute</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="FINANCE" class="form-check-input" ng-model="form.finance"
+                                    ng-change="updatePrivilege('FINANCE', form.finance)">
+                                <label for="FINANCE" class="form-check-label">Finance</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="LEAVE" class="form-check-input" ng-model="form.leave"
+                                    ng-change="updatePrivilege('LEAVE', form.leave)">
+                                <label for="LEAVE" class="form-check-label">Leave</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="FACE" class="form-check-input" ng-model="form.face"
+                                    ng-change="updatePrivilege('FACE', form.face)">
+                                <label for="FACE" class="form-check-label">Face Recognition</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="exampleInputName" class="form-label">Address:</label>
+                            <textarea name="address" ng-model="form.address" class="form-control"
+                                placeholder="Enter Address"> </textarea>
+                        </div>
+                        <div class="btn-container text-start">
+                            <input type="submit" class="btn btn-submit mt-3" value="SUBMIT">
+                            <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/parent/company.js"></script>

@@ -1,0 +1,348 @@
+<div th:replace="fragment/head"></div>
+<title>Users Details</title>
+<div th:replace="fragment/header"></div>
+<div ng-app="AdminManagment" ng-controller="UserController">
+    <div class="body-area" ng-show="views.list">
+        <div class="body-area-header ">
+            <div class="page-header mb-0">
+                <span class="header-line"></span>
+                <span class="lbl-page-header">Users Details</span>
+                <span class="header-line"></span>
+            </div>
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <form>
+                        <input class="form-control" type="search" ng-model="search" ng-change="searchUser(searchName)"
+                            placeholder="Search Employee..." aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+                <div class="page-action-end-container">
+                    <div class="btn-page-action-container">
+                        <button class="btn btn-page-action btn-page-action-dropdown" type="button"
+                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>More</span>
+                            <span class="icon-common icon-chevron icon-page-action-button"></span>
+                        </button>
+                        <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" ng-click="resetDeviceIdAll()" href="#">Reset All Device</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="body-area-content">
+            <div class="user-table-container">
+                <table class="user-table-view" id="">
+                    <tr class="table-head-primary">
+                        <th class="align-left">SL No.</th>
+                        <th class="align-left">Name</th>
+                        <th class="align-left">User Details</th>
+                        <th class="align-left">Contact Details</th>
+                        <th class="align-left">Employyee Details</th>
+                        <th class="align-left">Authority Details</th>
+                        <th class="align-left">Company</th>
+                        <th class="align-left">Location</th>
+                        <th>Active</th>
+                        <th>Action</th>
+                        <div class="spinner-wrapper" id="loader">
+                            <div class="spinner">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </tr>
+                    <tr ng-repeat="employee in employees | filter:search" class="row-red">
+                        <td class="align-left">{{$index + 1}}</td>
+                        <td class="align-left"><span class="user-role">{{employee.name}}</span></td>
+                        <td class="align-left">
+                            <strong>Username: </strong>{{employee.username}} <br>
+                            <strong>Role: </strong>{{employee.role}} 
+
+                        </td>
+                        <td class="align-left">
+                            <strong>Mobile: </strong>{{employee.mobile}} <br>
+                            <strong>Email: </strong>{{employee.email}}
+                        </td>
+                        <td class="align-left">
+                            <strong>Employee Id: </strong>{{employee.employeeId}} <br>
+                            <strong>Grade: </strong>{{employee.grade}}  <br>
+                            <strong>Department: </strong>{{employee.department}} 
+                        </td>
+                        <td class="align-left">
+                            <strong>Reporting Manager: </strong>{{employee.nameReportManager}} <br>
+                            <strong>Hod: </strong>{{employee.nameHod}}  <br>
+                            <span sec:authorize="hasAuthority('FINNACEACCESS')"> <strong>Finance Authority: </strong>{{employee.nameFinanceAuth}} </span>
+                        </td>
+                        <td class="align-left"><span class="user-role">{{employee.companyName}}</span></td>
+                        <td class="align-left"><span class="user-role">{{employee.location}}</span></td>
+                        <td>
+                            <form method="POST" class="content-center" ng-if="employee.enabled==false">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="userActivation(employee.id)" ng-model="employee.enabled" name="enabled"
+                                        checked=""> <span class="knob"></span>
+                                </label>                                
+                            </form>
+                            <form method="POST" class="content-center" ng-if="employee.enabled==true">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="userDeactivation(employee.id)" ng-model="employee.enabled" name="status"
+                                        checked=""> <span class="knob"></span>
+                                </label>
+                            </form>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit" data-bs-toggle="modal"
+                                    sec:authorize="hasAnyAuthority('SUPERADMIN','ADMIN','HOD')"
+                                    data-bs-target="#editUser" ng-click="openEditUser(employee.id)">
+                                    <span class="icon-common icon-action icon-edit-new"></span>
+                                </span>
+                                <span class="btn-action" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','HOD')">
+                                    <span class="icon-common icon-action icon-reset-pass"
+                                        ng-click="resetPassword(employee.id)"></span>
+                                </span>
+                                <span class="btn-action action-resetdevice-container"  ng-If="employee.deviceId !=null">
+                                    <span class="icon-common icon-action icon-device" ng-click="resetDeviceId(employee.id)"></span>
+                                </span>
+                                </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+             <!-- ***********************ADD EDIT USER MODAL START************************* -->
+        <div class="modal fade modal-custom" id="editUser" tabindex="-1" aria-labelledby="newRestaurantLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="newRestaurantLabel">
+                        <span class="icon-common icon-modal-header icon-add-circle"></span>
+                        <span>Edit User</span>
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" class="reg-form row g-3" ng-submit="addSaveEmployee()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="name"> Name: <span
+                                            class="text-danger">*</span>
+                                    </label> <input name="name" type="text" ng-model="form.name"
+                                        class="form-control" placeholder="Enter Name"
+                                        oninvalid="this.setCustomValidity('Please enter valid name')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Username: <span class="text-danger">*</span>
+                                    </label> <input name="username" type="text" ng-model="form.username"
+                                        class="form-control" ng-change="checkUserNameAvailability(form.username)"
+                                        placeholder="Enter UserName" pattern="^[^\s]+$"
+                                        oninvalid="this.setCustomValidity('Username should not contain spaces')"
+                                        oninput="this.setCustomValidity('')" required /> <span
+                                        style="color: red; display: none;" id="user-name-error">Username
+                                        already exist! Please try another one</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group position-relative">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Password: <span class="text-danger">*</span>
+                                    </label> <input name="password" type="password" ng-model="form.rawPassword"
+                                        class="form-control" id="idPassword" placeholder="******" />
+                                    <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"
+                                        ng-click="togglePassword()"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Email: <span class="text-danger">*</span>
+                                    </label> <input name="email" type="email" ng-model="form.email"
+                                        class="form-control" placeholder="Enter Email"
+                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                        oninvalid="this.setCustomValidity('Please enter valid email id')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Phone No: <span class="text-danger">*</span>
+                                    </label> <input name="phone" type="text" ng-model="form.mobile"
+                                        class="form-control" placeholder="Enter Phone No" pattern="[0-9]{10}"
+                                        oninvalid="this.setCustomValidity('Please enter valid mobile number')"
+                                        oninput="this.setCustomValidity('')" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-dark lbl-medium form-label" for="planName">
+                                    State: <span class="text-danger">*</span>
+                                    <select name="state" ng-model="form.stateId" class="form-control select2"
+                                        ng-options="state.id as state.name for state in states"
+                                        ng-change="fetchCityName(form.stateId)"
+                                        oninvalid="this.setCustomValidity('Please Select State')"
+                                        oninput="this.setCustomValidity('')" required>
+                                        <option value="" disabled selected>Select Option-</option>
+                                    </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Location: <span class="text-danger">*</span>
+                                    </label> <select name="jobRoleId" ng-model="form.locationId"
+                                        class="form-control select2"
+                                        ng-options="location.id as location.city for location in locations"
+                                        oninvalid="this.setCustomValidity('Please Select Location')"
+                                        oninput="this.setCustomValidity('')" required>
+                                        <option value disabled selected="selected">-Select
+                                            Location-</option>
+                                    </select>
+                                </div>
+                            </div>
+            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Role: <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="role" ng-model="form.role" class="form-control select2"
+                                        ng-options="role.access as role.name for role in roles"
+                                        oninvalid="this.setCustomValidity('Please Select Role')"
+                                        oninput="this.setCustomValidity('')" required>
+                                        <option value disabled selected="selected">-Select User Role-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="inputState" class="text-dark lbl-medium">Department <span
+                                            class="alert-danger" ng-if="form.role != 'ADMIN'">*</span></label>
+                                    <select ng-model="form.deptId" class="form-select"
+                                        ng-required="form.role != 'ADMIN'"
+                                        ng-options="dept.id as dept.name for dept in department"
+                                        ng-change="fetchDesignation(form.deptId)">
+                                        <option value="" disabled selected>Select Option-</option>
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="inputState" class="text-dark lbl-medium">Designation <span
+                                            class="alert-danger" ng-if="form.role != 'ADMIN'">*</span></label>
+                                    <select ng-model="form.designationId" class="form-select"
+                                    ng-options="dept.id as dept.name for dept in designation"
+                                        ng-required="form.role != 'ADMIN'">
+                                        <option value="" disabled selected>Select Option-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="inputState" class="text-dark lbl-medium">Approval Level <span
+                                            class="alert-danger" ng-if="form.role != 'ADMIN'">*</span></label>
+                                    <select ng-model="form.approvalLevelId" class="form-select"
+                                    ng-options="level.id as level.title for level in appvlLevel"
+                                        ng-required="form.role != 'ADMIN'">
+                                        <option value="" disabled selected>Select Option-</option>
+      
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Qualification: <span class="text-danger"
+                                            ng-if="form.role != 'ADMIN'">*</span>
+                                    </label> <input name="qualification" type="text" ng-model="form.qualification"
+                                        class="form-control" placeholder="Enter Qualification"
+                                        oninvalid="this.setCustomValidity('Please enter Qualification')"
+                                        oninput="this.setCustomValidity('')" ng-required="form.role != 'ADMIN'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="name"> Employee
+                                        Id: <span class="text-danger" ng-if="form.role != 'ADMIN'">*</span></label>
+                                    <input name="employeeId" type="text" ng-model="form.employeeId"
+                                        class="form-control" placeholder="Enter Employee Id"
+                                        ng-required="form.role != 'ADMIN'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4" ng-if="form.role != 'ADMIN' && form.role != 'HOD'">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName">
+                                        Grade: <!-- <span class="text-danger">*</span> -->
+                                    </label> <select name="gradeId" ng-model="form.gradeId"
+                                        class="form-control select2"
+                                        ng-options="grade.gradeId as grade.gradeName for grade in grades"
+                                        ng-click="fetchEmployeeGrade()">
+                                        <option value disabled selected="selected">-Select
+                                            Grade-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" ng-hide="form.role == 'ADMIN'">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName"> Bank
+                                        Name: <!-- <span class="text-danger">*</span> -->
+                                    </label> <input name="bankame" type="text" ng-model="form.bankName"
+                                        class="form-control select2" placeholder="Enter Bank Name">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName"> A/C
+                                        <!-- No: <span class="text-danger">*</span> -->
+                                    </label> <input name="bankAccountNo" type="text" ng-model="form.bankAccountNo"
+                                        class="form-control" placeholder="Enter Bank AC No"> </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName"> IFSC
+                                        Code: <!-- <span class="text-danger">*</span> -->
+                                    </label> <input type="text" name="bankIFSCCode" ng-model="form.bankIFSCCode"
+                                        class="form-control" placeholder="Enter IFSC Code"> </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" ng-if="form.role != 'ADMIN'">
+                                <div class="form-group">
+                                    <label class="text-dark lbl-medium" for="planName"> Bank
+                                        Type: <!-- <span class="text-danger">*</span> -->
+                                    </label> <select name="bankType" ng-model="form.bankType"
+                                        class="form-control select2">
+                                        <option value disabled selected="selected">-Select
+                                            Bank Type-</option>
+                                        <option value="ICICI Bank">ICICI Bank</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="btn-container text-start">
+                                <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                                <input type="reset" class="btn btn-cancel me-4 mt-3" value="CANCEL">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ************************ADD EDIT MODAL END******************** -->
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+    <div th:replace="fragment/footer"></div>
+    <script src="private/admin/user.js"></script>

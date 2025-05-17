@@ -1,0 +1,218 @@
+<div th:replace="fragment/head"></div>
+<title>Transport Mode Master</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="SuperAdminManagment" ng-controller="TransportModeController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Transport Mode Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Transport Mode Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Transport Mode Master</div>
+                </div>
+                <form ng-submit="addSaveModeMaster()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Location: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.locationId"
+                                    ng-options="location.id as location.city for location in locations"
+                                    class="form-select" oninvalid="this.setCustomValidity('Please Select Location')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">-Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Transportation Type: <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" ng-model="form.levelId"
+                                    ng-options="trans.id as trans.des for trans in transports"
+                                    oninvalid="this.setCustomValidity('Please Select Transport Type')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">-Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Base Price: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.basePrice" class="form-control"
+                                    placeholder="Enter Base Price" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Base Price')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Base Km: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.baseKm" class="form-control" min="0"
+                                    step="1" oninvalid="this.setCustomValidity('Please Enter Base km')"
+                                    oninput="this.setCustomValidity('')" placeholder="Enter Base Km" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Price/KM: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.pricePerKm" class="form-control"
+                                    placeholder="Enter Price/KM" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Price/k.m')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT Transport Level Master</div>
+                </div>
+                <form ng-submit="addSaveModeMaster()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Location: <span class="text-danger">*</span>
+                                </label>
+                                <select ng-model="form.locationId"
+                                    ng-options="location.id as location.city for location in locations"
+                                    class="form-select" oninvalid="this.setCustomValidity('Please Select Sub Location')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">-Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Transportation Type: <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" ng-model="form.levelId"
+                                    ng-options="trans.id as trans.des for trans in transports"
+                                    oninvalid="this.setCustomValidity('Please Select Sub Transport Type')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value="">-Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Base Price: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.basePrice" class="form-control"
+                                    placeholder="Enter Base Price" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Base Price')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Base Km: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.baseKm" class="form-control"
+                                    placeholder="Enter Base Km" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Base K.m')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Price/KM: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="number" ng-model="form.pricePerKm" class="form-control"
+                                    placeholder="Enter Price/KM" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Price/k.m')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">UPDATE</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search Mode Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Company Name.</th>
+                        <th>Trans. Type</th>
+                        <th>Location</th>
+                        <th>Base Price</th>
+                        <th>Base Km</th>
+                        <th>Price Rs./Km.</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="mode in transmode | filter:search" class="master-list">
+
+                        <tr class="row-red">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{mode.companyName}}</span></td>
+                            <td><span class="user-role">{{mode.levelName}}</span></td>
+                            <td><span class="user-role">{{mode.cityName}}</span></td>
+                            <td><span class="user-role">{{mode.basePrice}}</span></td>
+                            <td><span class="user-role">{{mode.baseKm}}</span></td>
+                            <td><span class="user-role">{{mode.pricePerKm}}</span></td>
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-edit">
+                                        <span class="icon-common icon-action icon-edit-new" ng-click="editMode(mode.id)"
+                                            onclick="openMasterEditview(this)"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/mode.js"></script>

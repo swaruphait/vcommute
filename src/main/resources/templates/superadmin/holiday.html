@@ -1,0 +1,166 @@
+<div th:replace="fragment/head"></div>
+<title>Designation Master</title>
+<div th:replace="fragment/header"></div>
+<div ng-app="SuperAdminManagment" ng-controller="HolidayMasterController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Holiday Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">ADD HOLIDAY LIST</div>
+                </div>
+                <form ng-submit="addHolidayList()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                   Company: <span class="text-danger">*</span>
+                                </label>
+                                <select name="companyId" ng-model="form.companyId" class="form-control select2"
+                                oninvalid="this.setCustomValidity('Please Select Company')"
+                                ng-options="companie.id as companie.name for companie in companies"
+                                oninput="this.setCustomValidity('')">
+                                <option value="" selected>{{supercompany}}</option>
+                            </select>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="form-label">
+                                    <span class="text-danger">*</span>Holiday Date:
+                                </label>
+                                <input class="form-control filter-date-picker w-100" ng-model="form.holidayDate" type="text"
+                                id="holidayDate"
+                                    placeholder="dd-mm-yyy" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Purpose: <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" ng-model="form.purpose"
+                              class="form-control" aria-describedby="fullNameHelp"
+                                placeholder="Enter Designation Name" required>
+                            </div>
+                        </div>
+                        <div class="btn-container ">
+                            <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                            <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()">CANCEL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT HOLIDAY LIST</div>
+                </div>
+                <form ng-submit="addHolidayList()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Sub-Company: <span class="text-danger">*</span>
+                                </label>
+                                <select name="companyId" ng-model="form.companyId"
+                        class="form-control select2" ng-options="companie.id as companie.name for companie in companies" ng-disabled=true  required>
+                        <option value disabled selected="selected">-Select Company-</option>
+                        </option>
+                       
+                    </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleInputName" class="form-label">
+                                    <span class="text-danger">*</span>Holiday Date:
+                                </label>
+                                <input class="form-control filter-date-picker w-100" ng-model="form.holidayDate" type="text"
+                                id="holidayDate"
+                                    placeholder="dd-mm-yyy" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Purpose: <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" ng-model="form.purpose"
+                              class="form-control" aria-describedby="fullNameHelp"
+                                placeholder="Enter Designation Name" required>
+                            </div>
+                        </div>
+                        <div class="btn-container ">
+                            <button type="submit" class="btn btn-submit mt-3">SUBMIT</button>
+                            <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()">CANCEL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <div class="lbl-page-action-header">
+                        <select class="btn btn-page-action btn-page-action-dropdown" ng-model="customer.compId"
+                        ng-change="fetchHoliday(customer.compId)"
+                        ng-options="companie.id as companie.name for companie in companies">
+                        <option value="" selected>{{supercompany}}-</option>
+                    </select>
+
+                    </div>
+                </div>
+                <div class="page-action-end-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search User Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th class="text-start">
+                            <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                        </th>
+                        <th>Purpose</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr ng-repeat="holi in holidays | filter:search" class="master-list row-red">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                            </div>
+                        </td>
+                        <td>{{holi.purpose}}</td>
+                        <td>{{holi.holidayDate | date:'dd MMM yyyy'}}</td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit">
+                                    <span class="icon-common icon-action icon-edit-new"
+                                        ng-click="editHoildays(holi.id)" onclick="openMasterEditview(this)"></span>
+                                </span>
+                                <span class="btn-action btn-icon btn-trash">
+                                    <span class="icon-common icon-action icon-trash"
+                                    ng-click="deleteHoliday(holi.id)" title="Delete"></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/holiday.js"></script>

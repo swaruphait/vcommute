@@ -1,0 +1,169 @@
+<div th:replace="fragment/head"></div>
+<title>Role Master</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="SuperAdminManagment" ng-controller="ClusterController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cluster Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Cluster Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Cluster Master</div>
+                </div>
+                <form ng-submit="addSaveCluster()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Cluster Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.clusterName" class="form-control"
+                                    placeholder="Enter Cluster Name"
+                                    ng-change="form.clusterName = (form.clusterName | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Entry Cluster Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Start Date: <span class="text-danger">*</span>
+                                </label>
+                                <input name="number" type="number" ng-model="form.startDate" class="form-control"
+                                    placeholder="Date Of Start" min="1" step="1" max="31"
+                                    oninvalid="this.setCustomValidity('Start Date Should be beween 1 to 31')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    End Date: <span class="text-danger">*</span>
+                                </label>
+                                <input name="number" type="number" ng-model="form.endDate" class="form-control"
+                                    placeholder="Date Of End" min="1" step="1" max="31"
+                                    oninvalid="this.setCustomValidity('End Date Should be beween 1 to 31')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT CLUSTER MASTER</div>
+                </div>
+                <form ng-submit="addSaveCluster()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Cluster Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.clusterName" class="form-control"
+                                    placeholder="Enter Cluster Name"
+                                    ng-change="form.clusterName = (form.clusterName | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Entry Cluster Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Start Date: <span class="text-danger">*</span>
+                                </label>
+                                <input name="number" type="number" ng-model="form.startDate" class="form-control"
+                                    placeholder="Date Of Start" min="1" step="1" max="31"
+                                    oninvalid="this.setCustomValidity('Start Date Should be beween 1 to 31')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    End Date: <span class="text-danger">*</span>
+                                </label>
+                                <input name="number" type="number" ng-model="form.endDate" class="form-control"
+                                    placeholder="Date Of End" min="1" step="1" max="31"
+                                    oninvalid="this.setCustomValidity('End Date Should be beween 1 to 31')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search User Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Cluster Name</th>
+                        <th>Company Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="cluster in clusters | filter:search" class="master-list">
+                        <tr class="row-red ">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{cluster.clusterName}}</span></td>
+                            <td><span class="user-role">{{cluster.companyName}}</span></td>
+                            <td><span class="user-role">{{cluster.startDate}}</span></td>
+                            <td><span class="user-role">{{cluster.endDate}}</span></td>
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-edit">
+                                        <span class="icon-common icon-action icon-edit-new"
+                                            ng-click="editCluster(cluster.id)"
+                                            onclick="openMasterEditview(this)"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/cluster.js"></script>

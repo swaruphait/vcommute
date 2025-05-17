@@ -1,0 +1,126 @@
+<div th:replace="fragment/head"></div>
+<title>Leave Approval</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="AdminManagment" ng-controller="LeaveApprovalController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Leave Approval</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}"><span class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Leave Approval</li>
+            </ol>
+        </nav>
+        <div class="page-action-container">
+            <div class="page-action-start-container">
+                <div class="btn-page-action-container">
+                    <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.user_id"
+                    ng-change="getDataNameWise(nameList.user_id,nameList.month_id)"
+                    ng-options="td.user_id as td.username for td in nameList">
+                    <option class="select-item" value="">-Select Employee-</option>
+                </select>
+                </div>
+                <div class="btn-page-action-container">
+                    <select class="btn btn-page-action btn-page-action-dropdown" ng-model="month_id"
+                    ng-change="filterByMonth(month_id)"
+                        ng-options="monthYearObj.month as monthYearObj.name for monthYearObj in uniqueMonths">
+                        <option class="select-item" value="">-Select Month-</option>
+                    </select>
+                </div>
+            </div>
+            <div class="page-action-end-container">
+                <div class="btn-page-action-container">
+                    <div class="dropdown">
+                        <ul class="dropdown-menu filter-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <form ng-submit="fetchTravelDataByDate()">
+                                <div class="lbl-filter-header">Start Date: </div>
+                                <input class="form-control filter-date-picker" ng-model="date.startdate" type="date"
+                                    placeholder="dd-mm-yyy">
+
+                                <div class="lbl-filter-header">End Date: </div>
+                                <input class="form-control filter-date-picker" ng-model="date.enddate" type="date"
+                                    placeholder="dd-mm-yyy">
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-apply btn-primary">
+                                        <span class="lbl-btn">Apply</span>
+                                        <span class="icon-common icon-btn icon-check"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </ul>
+                    </div>
+                </div>
+                <div class="btn-page-action-container">
+                    <!-- <button class="btn btn-page-action btn-page-action-dropdown" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>More</span>
+                        <span class="icon-common icon-chevron icon-page-action-button"></span>
+                    </button>
+                    <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" ng-click="GetValueForApprove()" href="#">Approve All</a></li>
+                        <li><a class="dropdown-item" ng-click="GetValueForDisApprove()" href="#">Disapprove All</a></li>
+                    </ul> -->
+                </div>
+            </div>
+        </div>
+        <div class="user-details-wrapper">
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>
+                            <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                        </th>
+                        <th>Name</th>
+                        <th>Leave Start Date</th>
+                        <th>Leave End Date</th>
+                        <th>Leave Type</th>
+                        <th>Action</th>
+                    </tr>
+                    <div class="spinner-wrapper" id="loader">
+                        <div class="spinner">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <tbody ng-repeat="td in leaveData | filter:search" class="list-row-container">
+                        <tr onclick="activeSubRow(this)" class="list-row row-red">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <!-- <input class="form-check-input mt-0 me-2" type="checkbox" value="" id="checkALL"
+                                        ng-change="checkItem(td.id, td.selected)" onclick="selectRow(this)"
+                                        ng-model="td.selected"> -->
+                                    <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                                </div>
+                            </td>
+                            <td>{{td.name}}</td>
+                           <td>{{td.leaveStartDate | date: 'dd-MM-yyyy'}}</td>
+                           <td>{{td.leaveEndDate | date: 'dd-MM-yyyy'}}</td>
+                           <td>{{td.typeOfLeave}}</td>
+
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-tick" onclick="selectRowAction(this)">
+                                        <span class="icon-common icon-action icon-tick"
+                                            ng-click="approveData(td.id,td.totalActualPrice)"></span>
+                                    </span>
+                                    <span class="btn-action btn-icon btn-x" onclick="selectRowAction(this)">
+                                        <span class="icon-common icon-action icon-x"
+                                            ng-click="disapproveData(td.id,td.totalActualPrice)"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:replace="fragment/footer"></div>
+
+        <script src="private/admin/leaveappvl.js"></script>

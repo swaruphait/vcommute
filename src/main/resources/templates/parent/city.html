@@ -1,0 +1,179 @@
+<div th:replace="fragment/head"></div>
+<title>City Master</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="LocationManagment" ng-controller="CityController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeCompany}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">City Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">City Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">City Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addEditCity()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Country: <span class="text-danger">*</span>
+                                </label>
+                                <select name="country" ng-model="form.countryId" class="form-control select2"
+                                ng-options="country.id as country.name for country in countries" oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" 
+                                ng-change="getStateCountryWise(form.countryId)" required>
+                                <option value="" disabled selected>Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    State: <span class="text-danger">*</span>
+                                </label>
+                                <select name="country" ng-model="form.stateId" class="form-control select2"
+                                ng-options="state.id as state.name for state in states" oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="" disabled selected>Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    City: <span class="text-danger">*</span>
+                                </label>
+                                <input name="city" type="text" ng-model="form.city" class="form-control"
+                                    placeholder="Enter Country Name" ng-change="form.city = (form.city | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter city Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Edit City Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addEditCity()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Country: <span class="text-danger">*</span>
+                                </label>
+                                <select name="country" ng-model="form.countryId" class="form-control select2"
+                                ng-options="country.id as country.name for country in countries" oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" 
+                                ng-change="getStateCountryWise(form.countryId)" required>
+                                <option value="" disabled selected>Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    State: <span class="text-danger">*</span>
+                                </label>
+                                <select name="country" ng-model="form.stateId" class="form-control select2" ng-change="stateListbyCountry()"
+                                ng-options="state.id as state.name for state in states" oninvalid="this.setCustomValidity('Please Select Country')"
+                                oninput="this.setCustomValidity('')" required>
+                                <option value="" disabled selected>Select Option-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    City: <span class="text-danger">*</span>
+                                </label>
+                                <input name="city" type="text" ng-model="form.city" class="form-control"
+                                    placeholder="Enter Country Name" ng-change="form.city = (form.city | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please enter city Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr ng-repeat="city in cites | filter:search" class="master-list row-red">
+                        <td>{{$index + 1}}</td>
+                        <td><span class="user-role">{{city.city}}</span></td>
+                        <td><span class="user-role">{{city.state}}</span></td>
+                        <td><span class="user-role">{{city.country}}</span></td>
+                        <td>
+                            <form method="POST" class="content-center" ng-if="city.status==false">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="cityActivation(city.id)" ng-model="city.status"
+                                        name="enabled" checked=""> <span class="knob"></span>
+                                </label>
+                            </form>
+                            <form method="POST" class="content-center" ng-if="city.status==true">
+                                <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
+                                <label class="switch"> <input class="user" type="checkbox" data-id="2"
+                                        ng-click="cityDeactivation(city.id)" ng-model="city.status"
+                                        name="status" checked=""> <span class="knob"></span>
+                                </label>
+
+                            </form>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit">
+                                    <span class="icon-common icon-action icon-edit-new"
+                                        ng-click="editCity(city.id)" onclick="openMasterEditview(this)"></span>
+                                </span>
+                                <!-- <span class="btn-action btn-icon btn-trash">
+                                    <span class="icon-common icon-action icon-trash"
+                                        ng-click="deleteCustomer(customer.id)" title="Delete"></span>
+                                </span> -->
+                            </div>
+            </div>
+            </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/parent/location.js"></script>

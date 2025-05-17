@@ -1,0 +1,269 @@
+<div th:replace="fragment/head"></div>
+<title>Customer Master</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="SuperAdminManagment" ng-controller="SubCustomerController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Customer Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Customer Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Customer Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addCustomer()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Company: <span class="text-danger">*</span>
+                                </label>
+
+                                <select name="companyId" ng-model="form.companyId" class="form-control select2"
+                                    oninvalid="this.setCustomValidity('Please Select Company')"
+                                    ng-options="companie.id as companie.name for companie in companies"
+                                    oninput="this.setCustomValidity('')">
+                                    <option value="" disabled selected>{{supercompany}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Customer Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Customer Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Enter Company Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Customer Location: <span class="text-danger">*</span>
+                                </label> <select name="jobRoleId" ng-model="form.locationId"
+                                    class="form-control select2"
+                                    ng-options="location.id as location.city for location in locations"
+                                    oninvalid="this.setCustomValidity('Please Select Location')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value disabled selected="selected">-Select
+                                        Customer Location-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Branch Area: <span class="text-danger"></span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.branchArea" class="form-control"
+                                    placeholder="Branch Name"
+                                    ng-change="form.branchArea = (form.branchArea | uppercase)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="latitude">
+                                    Latitude: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.latitude" class="form-control"
+                                    placeholder="Latitude" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="longitude">
+                                    Longitude: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.longitude" class="form-control"
+                                    placeholder="Longitude" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="radius">
+                                    Radius: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.radius" class="form-control"
+                                    placeholder="Radius" />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Edit Customer Master</div>
+                </div>
+                <form class="reg-form row g-3" ng-submit="addCustomer()">
+                    <div class="master-add-form row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Company: <span class="text-danger"></span>
+                                </label>
+                                <select name="companyId" ng-model="form.companyId"
+                                    ng-change="fetchSubGrade(); fetchTransLevel();"
+                                    ng-options="companie.id as companie.name for companie in companies" ng-disabled=true
+                                    class="form-control select2" required>
+                                    <option value="" disabled selected>-Select Company-</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Customer Name: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Customer Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Enter Company Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Customer Location: <span class="text-danger">*</span>
+                                </label> <select name="jobRoleId" ng-model="form.locationId"
+                                    class="form-control select2"
+                                    ng-options="location.id as location.city for location in locations"
+                                    oninvalid="this.setCustomValidity('Please Select Location')"
+                                    oninput="this.setCustomValidity('')" required>
+                                    <option value disabled selected="selected">-Select
+                                        Customer Location-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Branch Area: <span class="text-danger"></span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.branchArea" class="form-control"
+                                    placeholder="Branch Name"
+                                    ng-change="form.branchArea = (form.branchArea | uppercase)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="latitude">
+                                    Latitude: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.latitude" class="form-control"
+                                    placeholder="Latitude" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="longitude">
+                                    Longitude: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.longitude" class="form-control"
+                                    placeholder="Longitude" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="radius">
+                                    Radius: <span class="text-danger"></span>
+                                </label>
+                                <input name="number" type="text" ng-model="form.radius" class="form-control"
+                                    placeholder="Radius" />
+                            </div>
+                        </div>
+                        <div class="btn-container text-start">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">UPDATE</button>
+                            <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <div class="lbl-page-action-header">
+                        <select class="btn btn-page-action btn-page-action-dropdown" ng-model="customer.compId"
+                            ng-change="fetchCustomer(customer.compId)"
+                            ng-options="companie.id as companie.name for companie in companies">
+                            <option value="" selected>{{supercompany}}-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="page-action-end-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search Customer..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Cutomer Name</th>
+                        <th>Location</th>
+                        <th>Company Name</th>
+                        <th>Branch Name</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Radius</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+                    <tbody ng-repeat="customer in customers | filter:search" class="master-list">
+                        <tr class="row-red">
+                            <td>{{$index + 1}}</td>
+                            <td><span class="user-role">{{customer.name}}</span></td>
+                            <td><span class="user-role">{{customer.location}}</span></td>
+                            <td><span class="user-role">{{customer.companyName}}</span></td>
+                            <td><span class="user-role">{{customer.branchArea}}</span></td>
+                            <td><span class="user-role">{{customer.latitude}}</span></td>
+                            <td><span class="user-role">{{customer.longitude}}</span></td>
+                            <td><span class="user-role">{{customer.radius}}</span></td>
+                            <td>
+                                <div class="action-container">
+                                    <span class="btn-action btn-icon btn-edit">
+                                        <span class="icon-common icon-action icon-edit-new"
+                                            ng-click="editCustomer(customer.id)"
+                                            onclick="openMasterEditview(this)"></span>
+                                    </span>
+                                    <!-- <span class="btn-action btn-icon btn-trash">
+                                        <span class="icon-common icon-action icon-trash"
+                                            ng-click="deleteCustomer(customer.id)" title="Delete"></span>
+                                    </span> -->
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/customer.js"></script>

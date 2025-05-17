@@ -1,0 +1,180 @@
+<div th:replace="fragment/head"></div>
+<title>Department</title>
+<div th:replace="fragment/header"></div>
+
+<div ng-app="SuperAdminManagment" ng-controller="SubGradeMasterController">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
+                            class="icon-common icon-title-dashboard"></span>
+                        Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Grade Master</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Grade Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">Grade Master</div>
+                </div>
+                <form ng-submit="addSaveGrade()">
+                    <div class="master-add-form">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Company: <span class="text-danger">*</span>
+                                </label>
+                                <select name="companyId" ng-model="form.companyId" class="form-control select2"
+                                    oninvalid="this.setCustomValidity('Please Select Company')"
+                                    ng-options="companie.id as companie.name for companie in companies"
+                                    oninput="this.setCustomValidity('')">
+                                    <option value="" disabled selected>{{supercompany}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Grade: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Grade Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Enter Grade Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Level: <span class="text-danger">*</span>
+                                </label>
+                                <input name="gradeLevel" type="number" ng-model="form.gradeLevel" class="form-control"
+                                    placeholder="Enter Level Number" min="1" step="1"
+                                    ng-change="form.gradeLevel = (form.gradeLevel | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Enter Level Number')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="btn-container text-start">
+                                <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+                                <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT USER GRADE</div>
+                </div>
+                <form ng-submit="addSaveGrade()">
+                    <div class="master-add-form">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="planName">
+                                    Sub-Company: <span class="text-danger"></span>
+                                </label>
+                                <select name="companyId" ng-model="form.companyId" class="form-control select2"
+                                    ng-options="companie.id as companie.name for companie in companies" ng-disabled=true
+                                    required>
+                                    <option value disabled selected="selected">-Select Company-</option>
+                                    </option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Grade: <span class="text-danger">*</span>
+                                </label>
+                                <input name="name" type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter Grade Name" ng-change="form.name = (form.name | uppercase)"
+                                    oninvalid="this.setCustomValidity('Please Enter Grade Name')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-dark lbl-medium" for="name">
+                                    Level: <span class="text-danger">*</span>
+                                </label>
+                                <input name="gradeLevel" type="text" ng-model="form.gradeLevel" class="form-control"
+                                    placeholder="Enter Grade Level"
+                                    ng-change="form.gradeLevel = (form.gradeLevel | uppercase)" min="0" step="1"
+                                    oninvalid="this.setCustomValidity('Please Enter Level Number')"
+                                    oninput="this.setCustomValidity('')" required />
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="btn-container text-start">
+                                <button type="submit" class="btn btn-submit mt-3 ms-4">UPDATE</button>
+                                <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container">
+                    <div class="lbl-page-action-header">
+                        <select class="btn btn-page-action btn-page-action-dropdown" ng-model="customer.compId"
+                            ng-change="fetchGrade(customer.compId)"
+                            ng-options="companie.id as companie.name for companie in companies">
+                            <option value="" selected>{{supercompany}}-</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="page-action-end-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search User Type..." ng-model="search"
+                            aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th>SL No.</th>
+                        <th>Grade Name</th>
+                        <th>Grade Level</th>
+                        <th>Customer Name</th>
+                        <!-- <th>Status</th> -->
+                        <th>Action</th>
+                    </tr>
+
+                    <tr ng-repeat="grade in grades | filter:search" class="master-list row-red">
+                        <td>{{$index + 1}}</td>
+                        <td><span class="user-role">{{grade.name}}</span></td>
+                        <td><span class="user-role">{{grade.gradeLevel}}</span></td>
+                        <td><span class="user-role">{{grade.companyName}}</span></td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit">
+                                    <span class="icon-common icon-action icon-edit-new" ng-click="editGrade(grade.id)"
+                                        onclick="openMasterEditview(this)"></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/superadmin/grade.js"></script>
