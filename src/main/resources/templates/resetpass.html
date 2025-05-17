@@ -1,0 +1,35 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE- CHANGE PASSWORD</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="basicData" ng-controller="basicDataController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Reset Password</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="reset-pass-container">
+        <form class="reset-pass-form" ng-submit="submitForgoPass()">
+            <div class="mb-4 position-relative">
+                <label for="" class="form-label">Old Password</label>
+                <span class="icon-common icon-lock icon-form-before"></span>
+                <input type="password" class="form-control" id="idPasswordOld" ng-model="resetpass.password"  name="password" required
+                    value='' placeholder="Password">
+                <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePasswordOld"></span>
+            </div>
+            <div class="mb-4 position-relative">
+                <label for="" class="form-label">New Password</label>
+                <span class="icon-common icon-lock icon-form-before"></span>
+                <input type="password" class="form-control" id="idPasswordNew" ng-model="resetpass.newPassword" name="password" required
+                    value='' placeholder="Password">
+                <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePasswordNew"></span>
+            </div>
+            <div class="btn-container text-end">
+                <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()">CANCEL</button>
+                <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/basic.js"></script>

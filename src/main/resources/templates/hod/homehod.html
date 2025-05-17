@@ -1,0 +1,137 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE</title>
+<div th:replace="fragment/header"></div>
+<div ng-app="dashboardData" ng-controller="dashboardController">
+    <div class="row">
+        <div class="col-lg-7 col-md-12 col-12">
+            <div class="report-container container-bg-primary report-container-lg">
+                <div class="report-details-header lbl-ellipsis">User Traffic</div>
+                <!-- <div class="report-details-header">User Traffic</div>  -->
+                <div class="chart-wrapper">
+                    <canvas id="barChartHod"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-12 col-12">
+            <div class="row">
+                <div class="col-lg-12 col-md-6 col-12">
+                    <div class="report-container container-bg-secondary report-container-sm">
+                        <div class="row report-details-header">
+                            <div class="col-8">
+                                <div class="report-icon-wrapper">
+                                    <span class="report-icon-container">
+                                        <span class="icon-common icon-report-details icon-commute"></span>
+                                    </span>
+                                    <div class="report-details-sub-header lbl-ellipsis">Commute Activity</div>
+                                </div>
+                         
+                            </div>
+                            <div class="col-4">
+                                <div class="lbl-status-count">{{monthlyvisitHod.preMonthUses}}</div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="lineUsesChartHod"></canvas>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-6 col-12">
+                    <div class="report-container container-bg-secondary report-container-sm">
+                        <div class="row report-details-header">
+                            <div class="col-8">
+                                <div class="report-icon-wrapper">
+                                    <span class="report-icon-container">
+                                        <span class="icon-common icon-report-details icon-attandance"></span>
+                                    </span>
+                                    <div class="report-details-sub-header lbl-ellipsis">Attendance Activity</div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-4">
+                                <div class="lbl-status-count">{{monthlyvisitHod.preMonthAttendance}}</div>
+                            </div>
+                        </div>
+                        <!-- <div class="lbl-status-count">{{monthlyvisit.preMonthAttendance}}</div> -->
+                        <!-- <div class="report-details-sub-header">Attendance Activity</div> -->
+                        <!--		  <div ng-If="monthlyvisit.preWeekAttendance >= monthlyvisit.pastWeekAttendance">
+                            <h6 class="card-text"> Weekly Increased by
+                                {{monthlyvisit.pastWeekAttendance - monthlyvisit.preWeekAttendance}}%
+                            </h6>
+                        </div>
+                        <div ng-If="monthlyvisit.preWeekAttendance < monthlyvisit.pastWeekAttendance">
+                            <h6 class="card-text">Decrease by
+                                {{monthlyvisit.pastWeekAttendance - monthlyvisit.preWeekAttendance}}%
+                            </h6>
+                        </div>-->
+                        <div class="chart-wrapper">
+                            <canvas id="lineAttenChartHod"></canvas>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-7 col-lg-12">
+            <div class="row">
+                <div class="col-xl-6 col-lg-7 col-md-6">
+                    <div class="report-container container-bg-secondary report-container-md">
+                        <div class="report-details-container">
+                            <div class="row report-details-header">
+                                <div class="col-8 lbl-ellipsis">
+                                    Monthly Visit
+                                </div>
+                                <div class="col-4">
+                                    <div class="lbl-status-count">{{monthlyvisitHod.preMonthTravel}}</div>
+                                </div>
+                            </div>
+                            <!-- <div class="lbl-status-count">{{monthlyvisit.preMonthTravel}}</div> -->
+                            <div class="report-details-body">
+                                <div class="chart-wrapper">
+                                    <canvas id="lineChartHod"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-5 col-md-6">
+                    <div class="report-container container-bg-secondary report-container-md">
+                        <div class="report-details-container">
+                            <div class="row report-details-header">
+                                <div class="col-8 lbl-ellipsis">
+                                    Weekly Visit
+                                </div>
+                                <div class="col-4">
+                                    <div class="lbl-status-count">{{monthlyvisitHod.preWeekTravel}}</div>
+                                </div>
+                            </div>
+                            <!-- <div class="lbl-status-count">{{monthlyvisit.preWeekTravel}}</div> -->
+                            <div class="report-details-body">
+                                <div class="chart-wrapper">
+                                    <canvas id="weekChartHod"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5 col-lg-12">
+            <div class="report-container container-bg-standard report-container-md">
+                <div class="report-details-container">
+                    <div class="report-details-header lbl-ellipsis">User Distribution</div>
+                    <div class="report-details-body">
+                        <div class="chart-wrapper">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content-wrapper ends -->
+<div th:replace="fragment/footer"></div>
+<script src="private/hod/dashboard.js"></script>

@@ -1,0 +1,62 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-CITY MASTER</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="cityData" ng-controller="cityDataController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">City Master</span>
+        <span class="header-line"></span>
+    </div>
+        <div class="col-md-10 offset-md-1">
+            <div class="page-action-container">
+                <div class="page-action-start-container ms-4">
+                    <div class="lbl-page-action-header">City List</div>
+                </div>
+                <div class="page-action-end-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search"
+                            ng-model="searchCityInput"
+                            ng-change="searchCity(searchCityInput)"
+                            placeholder="Search Location/City Name..." aria-label="Search"> <span
+                            class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details-wrapper">
+                <div class="user-details overflow-x-auto">
+                    <table class="table-user-details table-lg">
+                        <tr class="table-head-primary">
+                            <th class="text-start">
+                                <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                            </th>
+                            <th>City Name</th>
+                            <th>State</th>
+                            <th>Country</th>
+                        </tr>
+                        <div class="spinner-wrapper" id="loader">
+                            <div class="spinner">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <tr ng-repeat="location in locations ">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                                </div>
+                            </td>
+                            <td>{{location.city}}</td>
+                            <td>{{location.stateName}}</td>
+                            <td>{{location.country}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/city.js"></script>

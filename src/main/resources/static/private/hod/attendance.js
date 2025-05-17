@@ -1,250 +1,434 @@
-var app = angular.module("HodManagment", []);
+var mainApp = angular.module("approvalData", []);
 
-app.controller("AttendanceReportController", function ($scope, $http, $timeout) {
-    var today = new Date();
-    $scope.form = {};
-    $scope.views = {};
-    $scope.views.list = true;
-    $scope.date = {
-        startdate: "",
-        enddate: "",
-        active: 'true',
-        location: ""
-    };
-    $scope.attendanceData = [];
-    $scope.attendanceDataBak = [];
-    $scope.nameList = [];
+// DIRECTIVE - FILE MODEL
+mainApp.directive('fileModel', ['$parse', function ($parse) {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			var model = $parse(attrs.fileModel);
+			var modelSetter = model.assign;
 
-    $scope.stdt = new Date(today.getFullYear(), today.getMonth() - 6, 1);
-    $scope.eddt = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+			element.bind('change', function () {
+				scope.$apply(function () {
+					modelSetter(scope, element[0].files[0]);
+				});
+			});
+		}
+	};
 
-    flatpickr("#holidayDate", {
-        enableTime: false,
-        noCalendar: false,
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        onChange: function (selectedDates, startDateStr) {
-            $scope.$apply(function () {
-                $scope.form.holidayDate = startDateStr;
-            });
-        }
-    });
+}]);
 
-    var AttendanceReport = {
-        headers: true,
-        columns: [{
-            columnid: 'name',
-            title: 'Name'
-        }, {
-            columnid: 'customerName',
-            title: 'customer Name'
-        }, {
-            columnid: 'startDate',
-            title: 'Start Date'
-        }, {
-            columnid: 'startTime',
-            title: 'Start Time'
-        }, {
-            columnid: 'startLocation',
-            title: 'Start Location'
-        }, {
-            columnid: 'endDate',
-            title: 'End Date'
-        }, {
-            columnid: 'endTime',
-            title: 'End Time'
-        }, {
-            columnid: 'endLocation',
-            title: 'End Location'
-        },
-        ],
-    };
+mainApp.controller('approvalDataController', function ($scope, $http) {
 
-    _autoAttendanceData();
-    function _autoAttendanceData() {
-        $scope.nameList = [];
-        $scope.uniqueMonths = [];
-        document.getElementById("loader").style.display = "block";
-        $http({
-            method: 'GET',
-            url: 'attendance/fetchAttendLevelAuthority',
-            params: {
-                "stdate": $scope.stdt,
-                "enddate": $scope.eddt
-            }
-        }).then(function successCallback(response) {
-            $scope.attendanceData = response.data.data;
-            document.getElementById("loader").style.display = "none";
-            angular.forEach($scope.attendanceData, function (val, key) {
-                var existingUser = $scope.nameList.find(function (user) {
-                    return user.user_id === val.userId;
-                });
-                if (!existingUser) {
-                    $scope.nameList.push({
-                        username: val.name,
-                        user_id: val.userId
-                    });
-                }
-            });
-
-            $scope.uniqueMonths = [];
-
-            angular.forEach($scope.attendanceData, function (item, key) {
-                var date = new Date(item.startDate);
-                var monthName = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-                var monthNumber = date.getMonth() + 1;
-                var monthYear = `${monthName}${date.getFullYear()}`;
-                var monthObj = { month: monthNumber, name: monthYear };
-
-                if (!($scope.uniqueMonths.some(e => e.month === monthObj.month && e.name === monthObj.name))) {
-                    $scope.uniqueMonths.push(monthObj);
-                }
-            });
-            $scope.attendanceDataBak = $scope.attendanceData;
-        }, function errorCallback(response) {
-            console.log(response.statusText);
-            document.getElementById("loader").style.display = "none";
-        });
-    };
+	$scope.imageIsViewed = false;
+	$scope.month_id = {};
+	$scope.refresh = function () {
+		location.reload();
+	};
+	$scope.customers = []; // Initialize customers array
 
 
-    $scope.getDataNameWise = function (userid, month) {
-        console.log(month);
-        $scope.uniqueMonths = [];
-        $scope.attendanceData = $scope.attendanceDataBak.filter(function (item) {
-            return item.userId === userid;
-        });
+	$scope.form = {
+		userId: null,
+		startDate: null,
+		startTime: null,
+		startCustId: null,
+		endDate: null,
+		endTime: null,
+		endCustId: null
+	};
 
-        angular.forEach($scope.attendanceData, function (item, key) {
-            var date = new Date(item.startDate);
-            var monthName = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            var monthNumber = date.getMonth() + 1;
-            var monthYear = `${monthName}${date.getFullYear()}`;
-            var monthObj = { month: monthNumber, name: monthYear };
+	var AttendanceReport = {
+		headers: true,
+		columns: [{
+			columnid: 'username',
+			title: 'Name'
+		}, {
+			columnid: 'startCustName',
+			title: 'Start Customer'
+		},{
+			columnid: 'startDate',
+			title: 'Start Date'
+		}, {
+			columnid: 'startTime',
+			title: 'Start Time'
+		}, {
+			columnid: 'endCustName',
+			title: 'Start Location'
+		}, {
+			columnid: 'customerLocation',
+			title: 'End Customer'
+		}, {
+			columnid: 'endDate',
+			title: 'End Date'
+		}, {
+			columnid: 'endTime',
+			title: 'End Time'
+		}, {
+			columnid: 'endLocation',
+			title: 'End Location'
+		}
+		],
+	};
 
-            if (!($scope.uniqueMonths.some(e => e.month === monthObj.month && e.name === monthObj.name))) {
-                $scope.uniqueMonths.push(monthObj);
-            }
-        });
+	// function initFlatpickr(selector, format, modelKey) {
+	// 	flatpickr(selector, {
+	// 		enableTime: false,
+	// 		noCalendar: false,
+	// 		dateFormat: format, 
+	// 		allowInput: true,
+	// 		onChange: function (selectedDates, dateStr) {
+	// 			if (!$scope.$$phase) {
+	// 				$scope.$apply(function () {
+	// 					$scope.form[modelKey] = dateStr;
+	// 				});
+	// 			} else {
+	// 				$scope.form[modelKey] = dateStr;
+	// 			}
+	// 		}
+	// 	});
+	// }
+	
+	// // Initialize Flatpickr for different date fields
+	// initFlatpickr("#startDate", "Y-m-d", "startDate");
+	// initFlatpickr("#endDate", "Y-m-d", "endDate");
 
-        if (month !== undefined) {
-            $scope.attendanceData = $scope.attendanceData.filter(function (item) {
-                var date = new Date(item.startDate);
-                return date.getMonth() + 1 === month;
-            });
-        }
-    }
+	flatpickr("#startDate", {
+		enableTime: false,
+		noCalendar: false, // Disable calendar (only time)
+		dateFormat: "Y-m-d", // Format as HH:mm:ss
+		allowInput: true, // Allow manual input
+		onChange: function (selectedDates, startDateStr) {
+			// Update the AngularJS model when the time changes
+			$scope.$apply(function () {
+				$scope.form.startDate = startDateStr;
+			});
+		}
+	});
 
-    $scope.getRange = function (total) {
-        return Array.from({ length: total }, (_, index) => index + 1);
-    };
-
-    $scope.filterByAttendStatus = function(status) {
-        $scope.attendanceData = angular.copy($scope.attendanceDataBak);
-        if (status === 'C') {
-            $scope.attendanceData = $scope.attendanceData.filter(function(item) {
-                return item.status === true;
-            });
-        } else if (status === 'U') {
-            $scope.attendanceData = $scope.attendanceData.filter(function(item) {
-                return item.status === false;
-            });
-        }
-    };
+	flatpickr("#endDate", {
+		enableTime: false,
+		noCalendar: false, // Disable calendar (only time)
+		dateFormat: "Y-m-d", // Format as HH:mm:ss
+		allowInput: true, // Allow manual input
+		onChange: function (selectedDates, ebnDateStr) {
+			// Update the AngularJS model when the time changes
+			$scope.$apply(function () {
+				$scope.form.endDate = ebnDateStr;
+			});
+		}
+	});
 
 
-    $scope.fetchAttendanceData = function (str) {
-        $http({
-            method: 'GET',
-            url: 'attendance/fetchAttendLevelAuthority',
-            params: {
-                "stdate": $scope.date.startdate,
-                "enddate": $scope.date.enddate,
-            }
-        }).then(function successCallback(response) {
-            $scope.attendanceData = response.data.data;
-            $scope.nameList=[];
-            angular.forEach($scope.attendanceData, function (val, key) {
-                var existingUser = $scope.nameList.find(function (user) {
-                    return user.user_id === val.userId;
-                });
-                if (!existingUser) {
-                    $scope.nameList.push({
-                        username: val.name,
-                        user_id: val.userId
-                    });
-                }
-            });
+	flatpickr("#startTime", {
+		enableTime: true, // Enable time selection
+		noCalendar: true, // Disable calendar (only time)
+		dateFormat: "H:i:S", // Format as HH:mm:ss
+		time_24hr: true, // Use 24-hour format
+		minuteIncrement: 1, // Increment time by 1 minute
+		secondIncrement: 1, // Increment time by 1 second
+		allowInput: true, // Allow manual input
+		onChange: function (selectedDates, startDateStr) {
+			// Update the AngularJS model when the time changes
+			$scope.$apply(function () {
+				$scope.form.startTime = startDateStr;
+			});
+		}
+	});
+
+	flatpickr("#endTime", {
+		enableTime: true, // Enable time selection
+		noCalendar: true, // Disable calendar (only time)
+		dateFormat: "H:i:S", // Format as HH:mm:ss
+		time_24hr: true, // Use 24-hour format
+		minuteIncrement: 1, // Increment time by 1 minute
+		secondIncrement: 1, // Increment time by 1 second
+		allowInput: true, // Allow manual input
+		onChange: function (selectedDates, enddateStr) {
+			// Update the AngularJS model when the time changes
+			$scope.$apply(function () {
+				$scope.form.endTime = enddateStr;
+			});
+		}
+	});
+
+	_autoAttendanceData();
+	function _autoAttendanceData() {
+		$scope.nameList = [];
+		document.getElementById("loader").style.display = "block";
+		$http({
+			method: 'GET',
+			url: 'fetchAttendApprovalDataAuthorityWise'
+		}).then(function successCallback(response) {
+			// console.log(JSON.parse(response.data));
+			$scope.attendanceData = response.data;
+			angular.forEach($scope.attendanceData, function (val, key) {
+				var existingUser = $scope.nameList.find(function (user) {
+					return user.user_id === val.userId;
+				});
+				if (!existingUser) {
+					$scope.nameList.push({
+						username: val.username,
+						user_id: val.userId
+					});
+				}
+			});
 
 
 
-            $scope.uniqueMonths = [];
+			$scope.uniqueMonths = [];
 
-            angular.forEach($scope.attendanceData, function (item, key) {
-                var date = new Date(item.startDate);
-                var monthName = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-                var monthNumber = date.getMonth() + 1;
-                var monthYear = `${monthName}${date.getFullYear()}`;
-                var monthObj = { month: monthNumber, name: monthYear };
+			angular.forEach($scope.attendanceData, function (item, key) {
+				var date = new Date(item.startDate);
+				var monthName = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+				var monthNumber = date.getMonth() + 1;
+				var monthYear = `${monthName}${date.getFullYear()}`;
+				var monthObj = { month: monthNumber, name: monthYear };
 
-                if (!($scope.uniqueMonths.some(e => e.month === monthObj.month && e.name === monthObj.name))) {
-                    $scope.uniqueMonths.push(monthObj);
-                }
-            });
+				if (!($scope.uniqueMonths.some(e => e.month === monthObj.month && e.name === monthObj.name))) {
+					$scope.uniqueMonths.push(monthObj);
+				}
+			});
 
-            $scope.attendanceDataBak = $scope.attendanceData;
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Customer Fetched',
-                showConfirmButton: true,
-            }).then(function () {
+			$scope.travelDataBak = $scope.attendanceData;
+			document.getElementById("loader").style.display = "none";
 
-            });
-            
-
-        }, function errorCallback(response) {
-            console.log(response.statusText);
-
-        });
-    };
+		}, function errorCallback(response) {
+			console.log(response.statusText);
+			document.getElementById("loader").style.display = "none";
+		});
+	};
 
 
+	$scope.getDataNameWise = function (userid, month) {
+		console.log(month);
+		$scope.uniqueMonths = [];
+		$scope.attendanceData = $scope.travelDataBak.filter(function (item) {
+			return item.userId === userid;
+		});
 
-    $scope.exportData = function () {
-        console.log($scope.attendanceData);
-        alasql(
-            'SELECT * INTO XLS("AttendanceReport.xls",?) FROM ?',
-            [AttendanceReport, $scope.attendanceData]);
+		angular.forEach($scope.attendanceData, function (item, key) {
+			var date = new Date(item.startDate);
+			var monthName = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+			var monthNumber = date.getMonth() + 1;
+			var monthYear = `${monthName}${date.getFullYear()}`;
+			var monthObj = { month: monthNumber, name: monthYear };
 
-    };
+			if (!($scope.uniqueMonths.some(e => e.month === monthObj.month && e.name === monthObj.name))) {
+				$scope.uniqueMonths.push(monthObj);
+			}
+		});
 
-    $scope.printData = function () {
-        printData();
+		if (month !== undefined) {
+			$scope.attendanceData = $scope.attendanceData.filter(function (item) {
+				var date = new Date(item.startDate);
+				return date.getMonth() + 1 === month;
+			});
+		}
 
-    };
-    function printData() {
-        var sTable = document.getElementById('customers').innerHTML;
-        var style = "<style>";
-        style = style
-            + "table {width: 100%;font: 17px Calibri;}";
-        style = style
-            + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
-        style = style
-            + "padding: 2px 3px;text-align: center;}";
-        style = style + "</style>";
-        var win = window.open('', '',
-            'height=700,width=700');
+	}
 
-        win.document.write('<html><head>');
-        win.document.write('<h1>Status Report</h1>');
-        win.document.write(style);
-        win.document.write('</head>');
-        win.document.write('<body>');
-        win.document.write(sTable);
-        win.document.write('</body></html>');
-        win.document.close();
-        win.print();
-    }
+	$scope.getRange = function (total) {
+		return Array.from({ length: total }, (_, index) => index + 1);
+	};
+
+	_autoFetchApprovalData();
+	function _autoFetchApprovalData() {
+		$http({
+			method: 'GET',
+			url: 'fetchUserListByAuthority'
+		}).then(function successCallback(response) {
+			$scope.users = response.data;
+		}, function errorCallback(response) {
+			console.log(response.statusText);
+		});
+	};
+
+
+
+	$scope.openEntryAttendance = function () {
+		$scope.form = {};
+		$scope.fetchAllCustomer();
+		$("#attendanceEntry").modal("show");
+
+	}
+
+	$scope.openEditAttendance = function () {
+		$scope.form = {};
+		$("#editAttendance").modal("show");
+
+	}
+
+	// Fetch customer data from the server
+	$scope.fetchAllCustomer = function () {
+		document.getElementById("loader").style.display = "block";
+		$http({
+			method: 'GET',
+			url: 'fetchCustomer',
+		}).then(function successCallback(response) {
+			$scope.customers = response.data;
+			document.getElementById("loader").style.display = "none";
+		}, function errorCallback(response) {
+			document.getElementById("loader").style.display = "none";
+			console.log(response.statusText);
+		});
+	};
+
+	$scope.updateStartCustomer = function(data, type) {
+		let selectedCustomer = $scope.customers.find(cust => cust.name === data);
+		if (selectedCustomer) {
+			$scope.form[type] = selectedCustomer.id; // Dynamically update form field
+		} else {
+			$scope.form[type] = null;
+		}
+	};
+	
+	
+	$scope.attendFindById = function (str) {
+		$http({
+			method: 'GET',
+			url: 'findAttendById',
+			params: { "id": str }
+		}).then(function successCallback(response) {
+			$scope.form = response.data;
+			$scope.fetchAllCustomer();
+			// Convert startDate to a valid YYYY-MM-DD format
+			// if ($scope.form.startDate) {
+			// 	$scope.form.startDate = new Date($scope.form.startDate);
+			// }
+	        
+		}, function errorCallback(response) {
+			console.error("Error:", response.statusText);
+		});
+	};
+	
+
+
+
+	$scope.entryAttendance = function () {
+		// Ensure only time is sent, not the full datetime string
+
+		console.log($scope.form);
+		$http({
+			method: "POST",
+			url: 'addAttendanceByAuthority',
+			data: angular.toJson($scope.form),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			transformResponse: angular.identity
+		}).then(function successCallback(response) {
+			Swal.fire({
+				position: 'center',
+				icon: 'success',
+				title: 'Success',
+				showConfirmButton: true,
+			}).then(function () {
+				location.reload();
+			});
+		}, function errorCallback(response) {
+			console.log(response.data);
+			Swal.fire({
+				position: 'center',
+				icon: 'error',
+				title: response.data,
+				showConfirmButton: true,
+			}).then(function () {
+			});
+		});
+	};
+
+
+
+	$scope.editAttendance = function () {
+		console.log($scope.form);
+		$http({
+			method: "PUT",
+			url: 'editAttendance',
+			data: angular.toJson($scope.form),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			transformResponse: angular.identity
+		}).then(function successCallback(response) {
+			Swal.fire({
+				position: 'center',
+				icon: 'success',
+				title: 'Success',
+				showConfirmButton: true,
+			}).then(function () {
+				location.reload();
+			});
+		}, function errorCallback(response) {
+			console.log(response.data);
+			Swal.fire({
+				position: 'center',
+				icon: 'error',
+				title: response.data,
+				showConfirmButton: true,
+			}).then(function () {
+			});
+		});
+	};
+
+
+	$scope.filterByMonth = function (month, userid) {
+		console.log(month);
+		console.log(userid);
+		$scope.attendanceData = $scope.travelDataBak.filter(function (item) {
+			var date = new Date(item.startDate);
+			return date.getMonth() + 1 === month;
+		});
+
+		if (userid !== undefined) {
+			$scope.attendanceData = $scope.attendanceData.filter(function (item) {
+				return item.userId === userid;
+			});
+		}
+	};
+
+	$scope.exportData = function() {
+		console.log($scope.attendanceData);
+		alasql(
+			'SELECT * INTO XLS("AttendanceData.xls",?) FROM ?',
+			[AttendanceReport, $scope.attendanceData]);
+
+	};
+
+
+	$scope.printData = function() {
+		printData();
+
+	};
+	function printData() {
+
+		var sTable = document.getElementById('customers').innerHTML;
+
+		var style = "<style>";
+		style = style
+			+ "table {width: 100%;font: 17px Calibri;}";
+		style = style
+			+ "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+		style = style
+			+ "padding: 2px 3px;text-align: center;}";
+		style = style + "</style>";
+
+		// CREATE A WINDOW OBJECT.
+		var win = window.open('', '',
+			'height=700,width=700');
+
+		win.document.write('<html><head>');
+		win.document.write('<h1>Attendance Report</h1>'); // <title> FOR PDF HEADER.
+		win.document.write(style); // ADD STYLE INSIDE THE HEAD TAG.
+		win.document.write('</head>');
+		win.document.write('<body>');
+		win.document.write(sTable); // THE TABLE CONTENTS INSIDE THE BODY TAG.
+		win.document.write('</body></html>');
+
+		win.document.close(); // CLOSE THE CURRENT WINDOW.
+
+		win.print(); // PRINT THE CONTENTS.
+
+	}
 
 });

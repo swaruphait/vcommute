@@ -1,398 +1,223 @@
 <div class="body">
-	<div class="left-bar" id="navContainer">
-		<div class="side-menu" id="navMenu">
-			<div class="side-menu-header d-none"></div>
-			<div class="side-menu-body">
-				<ul class="nav-menu-container" sec:authorize="hasAuthority('VARELI')">
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/homeCompany}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-dashboard"></span> <span
-								class="link-name">Dashboard</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/companyManagment}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-user-service"></span> <span
-								class="link-name">Company Master</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/planMaster}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-order"></span> <span class="link-name">Plan
-								Master</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/superadmin}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-user"></span> <span class="link-name">Superadmin
-								Master</span>
-						</a>
-					</li>
-					<li class="nav-item" id="navCourse">
-						<a class="nav-link" id="courseLink" onclick="toggleSubMenu(this)">
-							<span class="icon-common icon-sidemenu icon-settings"></span> <span
-								class="link-name">Settings</span> <span
-								class="icon-common icon-sidemenu icon-chevron"></span>
-						</a>
-						<ul class="sub-menu-container">
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/countrymaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Country
-										Master</span>
-								</a>
-								<a class="sub-menu-link" th:href="@{/statemaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">State
-										Master</span>
-								</a> <a class="sub-menu-link" th:href="@{/citymaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">City
-										Master</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<!-- *********************SUPERADMIN*************** -->
-				<ul class="nav-menu-container" sec:authorize="hasAuthority('SUPERADMIN')">
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/homeSuperAdmin' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/homeSuperAdmin}"> <span
-								class="icon-common icon-sidemenu icon-dashboard"></span> <span
-								class="link-name">Dashboard </span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}"
-						sec:authorize="hasAuthority('SUBCOMPANY')">
-						<a class="nav-link active" th:href="@{/subcompany}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-department-sidebar"></span> <span
-								class="link-name">Company
-								Master</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/saas-vcommute/homeCompany' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/usermanage}" onclick="toggleSubMenu(this)"> <span
-								class="icon-common icon-sidemenu icon-user-service"></span> <span class="link-name">User
-								Managment</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/subcription' ? 'sub-menu-active':''}">
-						<a th:href="@{/subcription}" class="nav-link"> <span
-								class="icon-common icon-sidemenu icon-order"></span> <span
-								class="link-name">Subscription</span>
-						</a>
-					</li>
-					<li class="nav-item" id="navCourse">
-						<a class="nav-link" id="courseLink" onclick="toggleSubMenu(this)">
-							<span class="icon-common icon-sidemenu icon-settings"></span> <span
-								class="link-name">Settings</span> <span
-								class="icon-common icon-sidemenu icon-chevron"></span>
-						</a>
-						<ul class="sub-menu-container">
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/customermaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Customer
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/rolemaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Role
-										Master</span>
-								</a></li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/departmentmaster}"> <span
-										class="icon-common icon-dash"></span> <span
-										class="submenu-link-label">Department</span>
-								</a></li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/designationmaster}"> <span
-										class="icon-common icon-dash"></span> <span
-										class="submenu-link-label">Designation</span>
-								</a></li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/holidaymaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Holiday
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/leavemaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Leave
-										Master</span>
-								</a>
-							<li class="sub-menu-item" sec:authorize="hasAuthority('FINNACEACCESS')">
-								<a class="sub-menu-link" th:href="@{/approvalmaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Approval
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/grademaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Grade
-										Master</span>
-								</a></li>
-							<li class="sub-menu-item" sec:authorize="hasAuthority('FINNACEACCESS')">
-								<a class="sub-menu-link" th:href="@{/clustermaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Cluster
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link " th:href="@{/transportdesc}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Transport
-										Descriptions</span>
-								</a></li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/modemaster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Transport
-										Master</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<!-- **********************ROLE ADMIN********************* -->
-				<ul class="nav-menu-container" sec:authorize="hasAnyAuthority('ADMIN')">
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/home}"> <span
-								class="icon-common icon-sidemenu icon-dashboard"></span><span
-								class="link-name">Dashboard</span>
-						</a>
-					</li>
-					<li class="nav-item" id="navCourse"><a class="nav-link" id="courseLink"
-							onclick="toggleSubMenu(this)">
-							<span class="icon-common icon-sidemenu icon-user-service"></span>
-							<span class="link-name">User Service</span> <span
-								class="icon-common icon-sidemenu icon-chevron"></span>
-						</a>
-						<ul class="sub-menu-container">
-							<li class="sub-menu-item"
-								th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/employees' ? 'sub-menu-active':''}">
-								<a class="sub-menu-link" th:href="@{/userreg}"> <span
-										class="icon-common icon-dash"></span><span>Users Registration</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"
-								th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/employees' ? 'sub-menu-active':''}">
-								<a class="sub-menu-link" th:href="@{/viewuser}"> <span
-										class="icon-common icon-dash"></span><span>View Users</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/commute_approval}">
-							<span class="icon-common icon-sidemenu icon-activity"></span>
-							<span class="link-name">Commute Approval</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('LEAVEACCESS')"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-					<a class="nav-link active" th:href="@{/leave_approval}">
-						<span class="icon-common icon-sidemenu icon-activity"></span>
-						<span class="link-name">Leave Approval</span>
-					</a>
-				</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/commute_disapproved}">
-							<span class="icon-common icon-sidemenu icon-disapproved"></span>
-							<span class="link-name">Disapproved Data</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('ATTENDANCEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/report_attendance}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-attendance"></span>
-							<span class="link-name">Attendance Report</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/commute_report}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-report"></span>
-							<span class="link-name">Commute Report</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('LEAVEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/leave_report}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-report"></span>
-							<span class="link-name">Leave Report</span>
-						</a>
-					</li>
-					<li class="nav-item" id="navCourse">
-						<a class="nav-link" id="courseLink" onclick="toggleSubMenu(this)">
-							<span class="icon-common icon-sidemenu icon-settings"></span> <span
-								class="link-name">Settings</span> <span
-								class="icon-common icon-sidemenu icon-chevron"></span>
-						</a>
-						<ul class="sub-menu-container">
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/customer}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Customer
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/role}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Role
-										Master</span>
-								</a></li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/department}"> <span
-										class="icon-common icon-dash"></span> <span
-										class="submenu-link-label">Department</span>
-								</a></li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/designation}"> <span
-										class="icon-common icon-dash"></span> <span
-										class="submenu-link-label">Designation</span>
-								</a></li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/holiday}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Holiday
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/leave}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Leave
-										Master</span>
-								</a>
-							<li class="sub-menu-item" sec:authorize="hasAuthority('FINNACEACCESS')">
-								<a class="sub-menu-link" th:href="@{/approval}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Approval
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/grade}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Grade
-										Master</span>
-								</a></li>
-							<li class="sub-menu-item" sec:authorize="hasAuthority('FINNACEACCESS')">
-								<a class="sub-menu-link" th:href="@{/cluster}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Cluster
-										Master</span>
-								</a>
-							</li>
-							<li class="sub-menu-item"><a class="sub-menu-link " th:href="@{/transport}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Transport
-										Descriptions</span>
-								</a></li>
-							<li class="sub-menu-item">
-								<a class="sub-menu-link" th:href="@{/mode}"> <span class="icon-common icon-dash"></span>
-									<span class="submenu-link-label">Transport
-										Master</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<!-- *******************ROLE HOD******************** -->
-				<ul class="nav-menu-container" sec:authorize="hasAnyAuthority('HOD')">
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/home}"> <span
-								class="icon-common icon-sidemenu icon-dashboard"></span><span
-								class="link-name">Dashboard</span>
-						</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/userlist}"> <span
-								class="icon-common icon-sidemenu icon-user-service"></span><span class="link-name">
-								User Details</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/commute_approval}">
-							<span class="icon-common icon-sidemenu icon-activity"></span>
-							<span class="link-name">Commute Approval</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('LEAVEACCESS')"
-					th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-					<a class="nav-link active" th:href="@{/leave_approval}">
-						<span class="icon-common icon-sidemenu icon-activity"></span>
-						<span class="link-name">Leave Approval</span>
-					</a>
-				</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/commute_disapproved}">
-							<span class="icon-common icon-sidemenu icon-disapproved"></span>
-							<span class="link-name">Disapproved Data</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('ATTENDANCEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/report_attendance_hod}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-attendance"></span>
-							<span class="link-name">Attendance Report</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('COMMUTEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/commute_report_hod}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-report"></span>
-							<span class="link-name">Commute Report</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('LEAVEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/leave_report_hod}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-report"></span>
-							<span class="link-name">Leave Report</span>
-						</a>
-					</li>
-				</ul>
-				<!-- *******************ROLE FINANCE******************** -->
-				<ul class="nav-menu-container" sec:authorize="hasAnyAuthority('FINANCE')">
-					<li class="nav-item"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/home}"> <span
-								class="icon-common icon-sidemenu icon-dashboard"></span><span
-								class="link-name">Dashboard</span>
-						</a>
-					</li>
-					<li class="nav-item" sec:authorize="hasAuthority('FINNACEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/home' ? 'sub-menu-active':''}">
-						<a class="nav-link active" th:href="@{/claimsettlement}">
-							<span class="icon-common icon-sidemenu icon-approval"></span>
-							<span class="link-name">Claim Settlement</span>
-						</a>
-					</li>
-					<li class="nav-item" id="navCourse" sec:authorize="hasAnyAuthority('FINNACEACCESS')"><a
-							class="nav-link" id="courseLink" onclick="toggleSubMenu(this)">
-							<span class="icon-common icon-sidemenu icon-user-service"></span>
-							<span class="link-name">Allowance Service</span> <span
-								class="icon-common icon-sidemenu icon-chevron"></span>
-						</a>
-						<ul class="sub-menu-container">
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/advanceallowance}"> <span
-										class="icon-common icon-dash"></span> <span class="submenu-link-label">Advance
-										Allowance</span>
-								</a></li>
-							<li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/viewpayable}">
-									<span class="icon-common icon-dash"></span> <span class="submenu-link-label">Payable
-										Allowance</span>
-								</a></li>
-						</ul>
-					</li>
-					<li class="nav-item" sec:authorize="hasAnyAuthority('FINNACEACCESS')"
-						th:classappend="${#httpServletRequest.getRequestURI() == '/asset-management/report' ? 'sub-menu-active':''}">
-						<a th:href="@{/paidreport}" class="nav-link">
-							<span class="icon-common icon-sidemenu icon-paid-report"></span>
-							<span class="link-name">Paid Report</span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+    <div class="left-bar" id="navContainer">
+        <div class="side-menu" id="navMenu">
+            <div class="side-menu-header d-none"></div>
+            <div class="side-menu-body">
+                <ul class="nav-menu-container">
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/home}"
+                            onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-dashboard"></span> <span
+                                class="link-name">Dashboard</span>
+                        </a></li>
+                    <li class="nav-item" id="navCourse"
+                    sec:authorize="hasAnyAuthority('SUPERADMIN','ADMIN','HR')"><a class="nav-link"
+                            id="courseLink" href="#submenuEnd" onclick="toggleSubMenu(this)">
+                            <span class="icon-common icon-sidemenu icon-user-service"></span>
+                            <span class="link-name">User Service</span> <span
+                                class="icon-common icon-sidemenu icon-chevron"></span>
+                        </a>
+                        <ul class="sub-menu-container" >
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/userreg}" > <span
+                                        class="icon-common icon-dash"></span>
+                                    <span>User Registration</span>
+                                </a></li>
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/viewuser}"> <span
+                                        class="icon-common icon-dash"></span> <span>Display
+                                        Users</span>
+                                </a></li>
+                        </ul>
+                        <li class="nav-item" id="navCourse"
+                        sec:authorize="hasAnyAuthority('HOD','FINANCE')">
+                        <a class="nav-link"
+                            id="courseLink" th:href="@{/viewlistuser}" onclick="toggleSubMenu(this)">
+                            <span class="icon-common icon-sidemenu icon-user-service"></span>
+                            <span class="link-name">User Management</span>
+                        </a>
+                        </li>
+                        <!-- <ul class="sub-menu-container" sec:authorize="hasAnyAuthority('SUPERADMIN','ADMIN','HR','FINANCE')">
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/userreg}" > <span
+                                        class="icon-common icon-dash"></span>
+                                    <span>User Registration</span>
+                                </a></li>
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/viewuser}"> <span
+                                        class="icon-common icon-dash"></span> <span>Display
+                                        Users</span>
+                                </a></li>
+                        </ul> -->
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','HOD','FINANCE')">
+                        <a class="nav-link active" th:href="@{/approval}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-activity"></span>
+                                <span class="link-name">Approval</span>
+                        </a>
+                    </li>
 
-	<div class="right-bar">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('HOD')">
+                        <a class="nav-link active" th:href="@{/attendance}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-activity"></span>
+                                <span class="link-name">Attendance</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('HR')">
+                        <a class="nav-link active" th:href="@{/attendance_approval}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-activity"></span>
+                                <span class="link-name">Attendance Approval</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('FINANCE')">
+                        <a class="nav-link active" onclick="toggleSubMenu(this)" th:href="@{/finance_approve}">
+                            <span class="icon-common icon-sidemenu icon-approval"></span>
+                            <span class="link-name">Finance Approval</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!hasAnyAuthority('BACKOFFICE','HR','FINANCE','HOD')">
+                        <a class="nav-link active" onclick="toggleSubMenu(this)" th:href="@{/commutedata}">
+                            <span class="icon-common icon-sidemenu icon-approval"></span>
+                            <span class="link-name">Commute Status</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!hasAnyAuthority('BACKOFFICE','HR','FINANCE','HOD')">
+                        <a class="nav-link active" th:href="@{/incompleteactivity}"
+                            onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-incomplete-activity"></span>
+                            <span class="link-name">Incomplete Activity</span>
+                        </a>
+                    </li>
+                            <li class="nav-item" sec:authorize="hasAnyAuthority('HOD','FINANCE')">
+                        <a class="nav-link active" th:href="@{/incompleteDataAuthority}"
+                            onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-incomplete-activity"></span>
+                            <span class="link-name">Incomplete Activity</span>
+                        </a>
+                    </li>
+                        <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','HOD')">
+                        <a class="nav-link active" onclick="toggleSubMenu(this)" th:href="@{/disapproved}">
+                            <span class="icon-common icon-sidemenu icon-disapproved"></span> <span
+                                class="link-name">Disapproved Data</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('FINANCE')">
+                        <a class="nav-link active" onclick="toggleSubMenu(this)" th:href="@{/disapproved_finance}">
+                            <span class="icon-common icon-sidemenu icon-disapproved"></span> <span
+                                class="link-name">Disapproved Data</span>
+                        </a>
+                    </li>
 
-		<div class="body-wrapper" id="bodyWrapper">
+                    
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')">
+                        <a class="nav-link active" th:href="@{/report}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-report"></span> <span
+                                class="link-name">Report</span>
+                        </a>
+                    </li>
+                        <li class="nav-item" sec:authorize="hasAnyAuthority('HOD','FINANCE')">
+                        <a class="nav-link active" th:href="@{/reportAuthority}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-report"></span> <span
+                                class="link-name">Report</span>
+                        </a>
+                    </li>
+                    </li>
+                        <li class="nav-item" sec:authorize="hasAnyAuthority('SUPERADMIN')">
+                        <a class="nav-link active" th:href="@{/reportAttendance}" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-report"></span> <span
+                                class="link-name">Report Attendance</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('FINANCE')">
+                        <a class="nav-link active" onclick="toggleSubMenu(this)"
+                            th:href="@{/paidreport}"> <span
+                                class="icon-common icon-sidemenu icon-paid-report"></span> <span
+                                class="link-name">Paid Report</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="navCourse" sec:authorize="hasAnyAuthority('FINANCE')"><a
+                            class="nav-link" id="courseLink" onclick="toggleSubMenu(this)">
+                            <span class="icon-common icon-sidemenu icon-user-service"></span>
+                            <span class="link-name">Allowance Service</span> <span
+                                class="icon-common icon-sidemenu icon-chevron"></span>
+                        </a>
+                        <ul class="sub-menu-container">
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/commute_advance}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Advance Allowance</span>
+                                </a></li>
+                            <li class="sub-menu-item"><a class="sub-menu-link" th:href="@{/payable_commute_amount}">
+                                    <span class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Payable Allowance</span>
+                                </a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="nav-item" id="navCourse"
+                        sec:authorize="hasAnyAuthority('ADMIN','BACKOFFICE','SUPERADMIN')">
+                        <a class="nav-link" id="courseLink" onclick="toggleSubMenu(this)"> <span
+                                class="icon-common icon-sidemenu icon-settings"></span> <span
+                                class="link-name">Settings</span> <span
+                                class="icon-common icon-sidemenu icon-chevron"></span>
+                        </a>
+                        <ul class="sub-menu-container">
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('SUPERADMIN')"><a
+                                    class="sub-menu-link" th:href="@{/company}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Company Master</span>
+                                </a></li>
+                            <li class="sub-menu-item"
+                                sec:authorize="hasAnyAuthority('ADMIN','BACKOFFICE','SUPERADMIN')">
+                                <a class="sub-menu-link" th:href="@{/customer}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Customer Master</span>
+                                </a>
+                            </li>
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                class="sub-menu-link" th:href="@{/department}"> <span
+                                    class="icon-common icon-dash"></span> <span
+                                    class="submenu-link-label">Department Master</span>
+                            </a></li>
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                    class="sub-menu-link" th:href="@{/city}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Location/City Master</span>
+                                </a></li>
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                    class="sub-menu-link" th:href="@{/grade}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Grade Master</span>
+                                </a></li>
+                            <li class="sub-menu-item"
+                                sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','FINANCE')">
+                                <a class="sub-menu-link" th:href="@{/cluster}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Cluster Master</span>
+                                </a>
+                            </li>
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                    class="sub-menu-link " th:href="@{/transport}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Transport Descriptions</span>
+                                </a></li>
+                            <li class="sub-menu-item"
+                                sec:authorize="hasAnyAuthority('ADMIN','HOD','SUPERADMIN')">
+                                <a class="sub-menu-link" th:href="@{/mode}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Transport Master</span>
+                                </a>
+                            </li>
+                            <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                    class="sub-menu-link" th:href="@{/role}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">User Type Master</span>
+                                </a></li>
+                                <li class="sub-menu-item" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')"><a
+                                    class="sub-menu-link" th:href="@{/financeAuthority}"> <span
+                                        class="icon-common icon-dash"></span> <span
+                                        class="submenu-link-label">Finance Authority</span>
+                                </a></li>   
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="right-bar">
+    <div class="body-wrapper" id="bodyWrapper">

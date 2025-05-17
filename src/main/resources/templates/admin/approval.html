@@ -1,239 +1,437 @@
 <div th:replace="fragment/head"></div>
-<title>Approval Level Master</title>
+<title>VCOMMUTE-APPROVAL</title>
 <div th:replace="fragment/header"></div>
-
-
-<!-- %%%%%%%%%%%%%%%%%%%%% Page Internal CSS  %%%%%%%%%%%%%%%%%%%%% -->
-
-<!-- =============================================================== -->
-<!-- %%%%%%%%%%%%%%%% View section Starts from Here %%%%%%%%%%%%%%%% -->
-<!-- =============================================================== -->
-<!-- %%%%%%%%%%%%%%%%%%% Admin %%%%%%%%%%%%%%%%%%% -->
-<div ng-app="SuperAdminManagment" ng-controller="ApprovalLevelController">
-    <div class="breadcrumb-container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a th:href="@{/homeSuperAdmin}"><span
-                            class="icon-common icon-title-dashboard"></span>
-                        Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Approval Level Master</li>
-            </ol>
-        </nav>
-    </div>
+<div class="user-details-container" ng-controller="approvalDataController" ng-app="approvalData">
     <div class="page-header">
         <span class="header-line"></span>
-        <span class="lbl-page-header">Approval Level Master</span>
+        <span class="lbl-page-header">Approval</span>
         <span class="header-line"></span>
     </div>
-    <div class="row">
-        <div class="col-xl-4">
-            <div id="formAddContainer">
-                <div class="page-action-container justify-content-center">
-                    <div class="lbl-page-action-header">Approval Level Master</div>
-                </div>
-                <form ng-submit="addSaveApvLevel()">
-                    <div class="master-add-form">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="text-dark lbl-medium" for="name">
-                                    Level Description:: <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" ng-model="form.title"
-                                    ng-change="form.title = (form.title | uppercase)" aria-describedby="fullNameHelp"
-                                    placeholder="Enter Level Description"
-                                    oninvalid="this.setCustomValidity('Please Entry Descriptiion Name')"
-                                    oninput="this.setCustomValidity('')" required>
-                            </div>
-                        </div>
-                        <div class="master-add-form-filed col-md-12" ng-repeat="edit in form.details ">
-                            <div class="row">
-                                <div class="col-5"><label for="inputState" class="form-label">User:</label></div>
-                                <div class="col-7"><label for="inputState" class="form-label">Order:</label></div>
-                            </div>
-                            <div class="row align-items-center master-add-form-sub-filed">
-                                <div class="col-5">
-                                    <select class="form-select" ng-model="edit.userId"
-                                        oninvalid="this.setCustomValidity('Please Select Approval User')"
-                                        oninput="this.setCustomValidity('')" required>
-                                        <option value="" disabled selected>Select Option-</option>
-                                        <option ng-repeat="user in users" value="{{ user.id }}">{{ user.name}}
-                                            ({{user.role}})</option>
-                                    </select>
-                                </div>
-                                <div class="col-5">
-                                    <input type="number" ng-model="edit.apvlLevel"
-                                        ng-init="edit.apvlLevel=edit.apvlLevel" class="form-control"
-                                        aria-describedby="fullNameHelp" placeholder="Enter Order" min="1" step="1"
-                                        oninvalid="this.setCustomValidity('Please Entry Order No.')"
-                                        oninput="this.setCustomValidity('')" required>
-                                </div>
-                                <div class="col-2 lbl-nowrap">
-                                    <span class="btn-action btn-icon btn-success-light">
-                                        <span class="icon-common icon-action icon-plus" ng-click="addRow1()"></span>
-                                    </span>
-                                    <span class="btn-action btn-icon btn-danger-light">
-                                        <span class="icon-common icon-action icon-minus"
-                                            ng-click="deleteRow1($index)"></span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-sm-6">
-                            <div class="btn-container text-start">
-                                <button type="submit" class="btn btn-submit mt-3 ms-4">SUBMIT</button>
-                                <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
-                            </div>
-                        </div>
-                    </div>
-                </form>
+    <div class="page-action-container">
+        <div class="page-action-start-container d-flex ms-5">
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.user_id"
+                    ng-change="getDataNameWise(nameList.user_id,nameList.month_id)"
+                    ng-options="td.user_id as td.username for td in nameList">
+                    <option class="select-item" value="">-Select Employee-</option>
+                </select>
             </div>
-            <div class="d-none" id="formEditContainer">
-                <div class="page-action-container justify-content-center">
-                    <div class="lbl-page-action-header">EDIT APPROVAL LEVEL MASTER</div>
-                </div>
-                <form ng-submit="editApvLevel()">
-                    <div class="master-add-form">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <lab<label for="exampleInputName" class="form-label">Level Description:</label>
-                                    <input type="text" class="form-control" ng-model="form.title"
-                                        ng-change="form.title = (form.title | uppercase)"
-                                        aria-describedby="fullNameHelp" placeholder="Enter Level Description"
-                                        oninvalid="this.setCustomValidity('Please Entry Descriptiion Name')"
-                                        oninput="this.setCustomValidity('')" required>
-                            </div>
-                        </div>
-                        <div class="master-add-form-filed col-md-12" ng-repeat="edit in form.details ">
-                            <div class="row">
-                                <div class="col-5"><label for="inputState" class="form-label">User:</label></div>
-                                <div class="col-7"><label for="inputState" class="form-label">Order:</label></div>
-                            </div>
-                            <div class="row align-items-center master-add-form-sub-filed">
-                                <div class="col-5">
-                                    <select class="form-select" ng-model="edit.userId" ng-init="edit.userId=edit.userId"
-                                        ng-options="user.id as user.name+'('+user.role+')' for user in users"
-                                        oninvalid="this.setCustomValidity('Please Select Location')"
-                                        oninput="this.setCustomValidity('')" required>
-                                        <option value="" disabled selected>Select Option-</option>
-                                        <!-- <option ng-repeat="user in users" value="{{ user.id }}">{{ user.name}} ({{user.roleName}})</option> -->
-                                    </select>
-                                </div>
-                                <div class="col-5">
-                                    <input type="text" ng-model="edit.apvlLevel" ng-init="edit.apvlLevel=edit.apvlLevel"
-                                        class="form-control" aria-describedby="fullNameHelp" placeholder="Enter Order"
-                                        min="1" step="1" oninvalid="this.setCustomValidity('Please Entry Order No.')"
-                                        oninput="this.setCustomValidity('')" required>
-                                </div>
-                                <div class="col-2 lbl-nowrap">
-                                    <span class="btn-action btn-icon btn-success-light">
-                                        <span class="icon-common icon-action icon-plus" ng-click="addRow1()"></span>
-                                    </span>
-                                    <span class="btn-action btn-icon btn-danger-light">
-                                        <span class="icon-common icon-action icon-minus"
-                                            ng-click="deleteRow1($index)"></span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-sm-6">
-                            <div class="btn-container text-start">
-                                <button type="submit" class="btn btn-submit mt-3 ms-4">UPDATE</button>
-                                <input type="reset" class="btn btn-cancel mt-3" value="CANCEL">
-                            </div>
-                        </div>
-                    </div>
-                </form>
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.month_id"
+                    ng-change="filterByMonth(nameList.month_id,nameList.user_id)"
+                    ng-options="monthYearObj.month as monthYearObj.name for monthYearObj in uniqueMonths">
+                    <option class="select-item" value="">-Select Month-</option>
+                </select>
             </div>
         </div>
-        <div class="col-xl-8">
-            <div class="page-action-container">
-                <div class="page-action-start-container">
-                    <form class="position-relative">
-                        <input class="form-control" type="search" placeholder="Search Department..." ng-model="search"
-                            aria-label="Search">
-                        <span class="icon-common icon-form icon-search"></span>
+        <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+                <div class="dropdown">
+                    <button class="btn btn-page-action" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="icon-common icon-filter icon-page-action-button"></span>
+                        <span>Filter</span>
+                    </button>
+                    <form ng-submit="fetchTravelDataByDate()">
+                        <ul class="dropdown-menu filter-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="lbl-filter-header">Start Date: </div>
+                            <input class="form-control filter-date-picker" ng-model="date.startdate" type="date"
+                                placeholder="dd-mm-yyy">
+
+                            <div class="lbl-filter-header">End Date: </div>
+                            <input class="form-control filter-date-picker" ng-model="date.enddate" type="date"
+                                placeholder="dd-mm-yyy">
+                            <div class="text-center mt-4">
+                                <button class="btn btn-apply btn-primary">
+                                    <span class="lbl-btn">Apply</span>
+                                    <span class="icon-common icon-btn icon-check"></span>
+                                </button>
+                            </div>
+                        </ul>
                     </form>
                 </div>
             </div>
-            <div class="user-details overflow-x-auto">
-                <table class="table-user-details table-lg">
-                    <tr class="table-head-primary">
-                        <th>SL No.</th>
-                        <th>Appvl Level Name</th>
-                        <th>Customer Name</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    <tbody ng-repeat="data in approvalOrders | filter:search" class="list-row-container">
-                        <tr class="master-list list-row row-red" onclick="activeSubRow(this)">
-                            <td>{{$index + 1}}</td>
-                            <td>{{data.title}}</td>
-                            <td>{{data.company}}</td>
-                            <td>
-                                <form method="POST" class="content-center" ng-if="data.status==false">
-                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
-                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
-                                            ng-click="userActivation(data.id)" ng-model="data.status" name="status"
-                                            checked=""> <span class="knob"></span>
-                                    </label>
-                                </form>
-                                <form method="POST" class="content-center" ng-if="data.status==true">
-                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
-                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
-                                            ng-click="userDeactivation(data.id)" ng-model="data.status" name="status"
-                                            checked=""> <span class="knob"></span>
-                                    </label>
-
-                                </form>
-                            </td>
-                            <td>
-                                <div class="action-container">
-                                    <span class="btn-action btn-icon btn-edit">
-                                        <span class="icon-common icon-action icon-edit-new"
-                                            ng-click="apvleveledit(data.id)" onclick="openMasterEditview(this)"></span>
-                                    </span>
-                                    <!-- <span class="btn-action btn-icon btn-trash"
-                                    sec:authorize="hasAnyAuthority('SUPERADMIN')">
-                                    <span class="icon-common icon-action icon-trash"
-                                        ng-click="deleteusertype(usertype.id)" title="Delete"></span>
-                                </span> -->
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="sub-row" style="position: relative; left: 10%;">
-                            <th class="sub-row-header">Name</th>
-                            <th class="sub-row-header">Approval Order</th>
-                            <th class="sub-row-header">Status</th>
-                        <tr class="sub-row" ng-repeat="tdata in data.approvalDetails"
-                            style="position: relative; left: 10%;">
-                            <td>{{tdata.name}}</td>
-                            <td>{{tdata.apvlLevel}}</td>
-                            <td>
-                                <form method="POST" class="content-center" ng-if="tdata.status==false">
-                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
-                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
-                                            ng-click="activeDetails(tdata.id)" ng-model="tdata.status" name="status"
-                                            checked=""> <span class="knob"></span>
-                                    </label>
-                                </form>
-                                <form method="POST" class="content-center" ng-if="tdata.status==true">
-                                    <input type="hidden" name="_token" value="FsM848SirJ6QKs0CFziA4j7n5KkBtIkiG32c4lng">
-                                    <label class="switch"> <input class="user" type="checkbox" data-id="2"
-                                            ng-click="deActiveDetails(tdata.id)" ng-model="tdata.status" name="status"
-                                            checked=""> <span class="knob"></span>
-                                    </label>
-                                </form>
-                            </td>
-                            <!-- <td colspan="4"></td> -->
-                        </tr>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action btn-page-action-dropdown" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span>More</span>
+                    <span class="icon-common icon-chevron icon-page-action-button"></span>
+                </button>
+                <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" ng-click="GetValueForApprove()" href="#">Approve All</a></li>
+                    <li><a class="dropdown-item" ng-click="GetValueForDisApprove()" href="#">Disapprove All</a></li>
+                </ul>
             </div>
         </div>
     </div>
-</div>
-<!-- content-wrapper ends -->
+    <div class="user-details-wrapper">
+        <div class="user-details overflow-x-auto">
+            <table class="table-user-details table-lg">
+                <tr class="table-head-primary">
+                    <th>
+                        <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                    </th>
+                    <th>Name</th>
+                    <th>Customer Name</th>
+                    <th>
+                        <div>Start Date</div>
+                        <div>Start Time</div>
+                    </th>
+                    <th>
+                        <div>Start Location</div>
+                    </th>
+                    <th>
+                        <div>End Date</div>
+                        <div>End Time</div>
+                    </th>
+                    <th>
+                        <div>End Location</div>
+                    </th>
+                    <th>Total Distance</th>
+                    <th>Travel Time</th>
+                    <th style="width: 7%;">
+                        <div>Est. Price</div>
+                        <div>Act. Price</div>
+                    </th>
+                    <th>Ref. Code</th>
+                    <th>Purpose</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+                <div class="spinner-wrapper" id="loader">
+                    <div class="spinner">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <tbody ng-repeat="td in travelData | filter:search" class="list-row-container">
+                    <tr onclick="activeSubRow(this)" class="list-row row-red">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <input class="form-check-input mt-0 me-2" type="checkbox" value="" id="checkALL"
+                                    ng-change="checkItem(td.id, td.selected)" onclick="selectRow(this)"
+                                    ng-model="td.selected">
+                                <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                            </div>
+                        </td>
+                        <td>{{td.username}}</td>
+                        <td style="width: 10%;">{{td.customerName}}</td>
+                        <td>
+                            <div>{{td.startDate | date:"dd-MM-yyyy"}}</div>
+                            <div>{{td.startTime}}</div>
+                        </td>
+                        <td>
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value" ng-if="td.startLocationArea!=null">{{td.startLocationArea}}</div>
+                                <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                    ng-if="td.startLocationArea==null || td.startLocationArea==''">{{td.startLocation}}
+                                </div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <a class="me-2 text-area"
+                                                href="https://www.google.com/maps?q={{td.startLat}},{{td.startLong}}"
+                                                target="_blank">{{td.startLocation}}</a>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                        <div class="dv-seperator-sm"></div>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <span class="me-2 text-area">{{td.startLat}}, {{td.startLong}}</span>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>{{td.endDate | date:"dd-MM-yyyy"}}</div>
+                            <div>{{td.endTime }}</div>
+                        </td>
+                        <td>
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value" ng-if="td.endLocationArea!=null">{{td.endLocationArea}}</div>
+                                <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                    ng-if="td.endLocationArea==null || td.endLocationArea==''">{{td.endLocation}}</div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <a class="me-2 text-area"
+                                                href="https://www.google.com/maps?q={{td.endLat}},{{td.endLong}}"
+                                                target="_blank">{{td.endLocation}}</a>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                        <div class="dv-seperator-sm"></div>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <span class="me-2 text-area">{{td.endLat}}, {{td.endLong}}</span>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{td.totalDistance | number : 3}} k.m</td>
+                        <td>{{td.totalTime}}</td>
+                        <td>
+                            <div class="lbl-nowrap"> &#8377; {{td.totalEstimatePrice | number : 2}}</div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">&#8377;</div>
+                                </div>
+                                <input type="text" ng-model="td.totalActualPrice"
+                                    ng-init="td.totalActualPrice = td.totalActualPrice || '0.0'" class="form-control"
+                                    id="inlineFormInputGroup" placeholder="0.0" onclick="selectRowAction(this)">
+                            </div>
+                        </td>
+                        <td class="word-break">{{td.referencenumber}}</td>
+                        <td>
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.purpose}}</div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <div>{{td.purpose}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
 
-<div th:replace="fragment/footer"></div>
-<script src="private/admin/approvallevel.js"></script>
+                        <td class="word-break">
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.note}}</div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <div>{{td.note}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-tick" onclick="selectRowAction(this)">
+                                    <span class="icon-common icon-action icon-tick"
+                                        ng-click="ApproveData(td.id,td.totalActualPrice)"></span>
+                                </span>
+                                <span class="btn-action btn-icon btn-x" onclick="selectRowAction(this)">
+                                    <span class="icon-common icon-action icon-x"
+                                        ng-click="DisapproveData(td.id,td.totalActualPrice)"></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="sub-row">
+                        <th class="sub-row-header">Sl.</th>
+                        <th class="sub-row-header">Mode</th>
+                        <th class="sub-row-header">
+                            <div>Start Date</div>
+                            <div>Start Time</div>
+                        </th>
+                        <th class="sub-row-header">
+                            Start Location
+                        </th>
+                        <th class="sub-row-header">
+                            <div>End Date</div>
+                            <div>End Time</div>
+                        </th>
+                        <th class="sub-row-header">
+                            End Location
+                        </th>
+                        <th class="sub-row-header">
+                            <div>Estimated Price</div>
+                            <div>Price</div>
+                        </th>
+                        <th class="sub-row-header">Estimated Distance</th>
+                        <th class="sub-row-header">Estimated Time</th>
+                        <th class="sub-row-header">Document</th>
+                        <td colspan="6"></td>
+                    </tr>
+                    <tr class="sub-row" ng-repeat="tdata in td.travelDataDetails">
+                        <td>{{$index+1}}</td>
+                        <td class="sub-row-data">{{tdata.modeName}}</td>
+                        <td class="sub-row-data">
+                            <div>{{tdata.startDate}}</div>
+                            <div>{{tdata.startTime}}</div>
+                        </td>
+                        <td>
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value" ng-if="tdata.startLocationArea!=null">{{tdata.startLocationArea}}
+                                </div>
+                                <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                    ng-if="tdata.startLocationArea==null || tdata.startLocationArea==''">
+                                    {{tdata.startLocation}}</div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <a class="me-2 text-area"
+                                                href="https://www.google.com/maps?q={{tdata.startLat}},{{tdata.startLong}}"
+                                                target="_blank">{{tdata.startLocation}}</a>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                        <div class="dv-seperator-sm"></div>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <span class="me-2 text-area">{{tdata.startLat}}, {{tdata.startLong}}</span>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="sub-row-data">
+                            <div>{{tdata.endDate}}</div>
+                            <div>{{tdata.endTime}}</div>
+                        </td>
+                        <td>
+                            <div class="value-tooltip-container">
+                                <div class="lbl-value" ng-if="tdata.endLocationArea!=null">{{tdata.endLocationArea}}
+                                </div>
+                                <div class="lbl-value lbl-short-value lbl-ellipsis"
+                                    ng-if="tdata.endLocationArea==null || tdata.endLocationArea==''">
+                                    {{tdata.endLocation}}</div>
+                                <div class="value-details">
+                                    <div class="value-tooltip">
+                                        <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <a class="me-2 text-area"
+                                                href="https://www.google.com/maps?q={{tdata.endLat}},{{tdata.endLong}}"
+                                                target="_blank">{{tdata.endLocation}}</a>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                        <div class="dv-seperator-sm"></div>
+                                        <div
+                                            class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                            <span class="me-2 text-area">{{tdata.endLat}}, {{tdata.endLong}}</span>
+                                            <span class="icon-common icon-tooltip icon-copy"
+                                                onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="sub-row-data">
+                            <div>&#8377;{{tdata.estimatePrice}}</div>
+                            <div>&#8377;{{tdata.actualPrice}}</div>
+                        </td>
+                        <td>{{tdata.distance}}</td>
+                        <td>{{tdata.time}}</td>
+                        <td class="sub-row-data">
+                            <span>
+                                <img ng-if="tdata.images!=null" id="image_view_modal"
+                                    ng-click="setImageAsViewed($index,tdata.images)" src="uploads/{{tdata.images}}"
+                                    style="width: 50px; border-radius: 10px; cursor: pointer;" />
+                            </span>
+                            <a href="" ng-if="tdata.images==null" id="uploadmulti_file_modal"
+                                ng-click="upladFileModal(tdata.id)">
+                                <span class="icon-common icon-table-details icon-file"></span>
+                            </a>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- ***********************modal start**************************** -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="fileUpladModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Approval: Upload File</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <form id="kt_ecommerce_settings_general_form" class="form"
+                        ng-submit="uploadImage(form.uploadFile,form.id)">
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="fv-row mb-7">
+                                        <label class="fs-12 fw-semibold form-label mt-3"><span class=""><b>Upload
+                                                    File</b></span></label> <input type="file"
+                                            class="form-control form-control-solid" file-model="form.uploadFile"
+                                            name="filename">
+                                        <!-- <a class="border border-secondary btn btn-icon btn-light-primary" ng-click="uploadImage(form.uploadFile,form.id)" title="Upload"><i class="mdi mdi-upload"></i></a> -->
+                                    </div>
+                                    <input type="hidden" class="form-control form-control-solid" hidden
+                                        ng-model="form.id" placeholder=" Narration" name="Assets_No" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- modal for image view -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="imageViewModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content w-75">
+                    <div class="modal-header">
+                        <h3 class="modal-title" style="text-align: center;">Document
+                            View</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+                    <div class="modal-body">
+                        <img src="uploads/{{view_image}}"
+                            style="max-width: 100%; min-width: 100%; max-height: 70vh; min-height: 50vh"
+                            id="modalImage">
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragment/footer"></div>
+        <script src="private/hod/approval.js"></script>

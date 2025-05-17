@@ -1,0 +1,128 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-FINANCE AUTHORITY</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container"  ng-app="financeAuthorityData" ng-controller="financeAuthorityController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Finance Authority Master</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div id="formAddContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">ADD FINANCE AUTHORITY</div>
+                </div>
+                <form class="forms-sample" ng-submit="submitFinanceAuthority()">
+                    <div class="master-add-form">
+                    <div class="master-add-form-filed" aria-readonly="true">
+                        <label for="inputState" class="form-label">Authority:</label>
+                      <input type="text" class="form-control" value="FINANCE APPROVAL" readonly>
+                    </div>
+                    <div class="master-add-form-filed">
+                        <label for="inputState" class="form-label">User:</label>
+                        <select ng-model="form.userId" class="form-select"
+                            ng-options="mang.id as mang.name for mang in managers"
+                            required>
+                            <option value="">-Select Option-</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit" class="btn btn-submit mt-3 ms-4">SAVE</button>
+                        <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()"
+                            onclick="openMasterAddview(this)">CANCEL</button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="d-none" id="formEditContainer">
+                <div class="page-action-container justify-content-center">
+                    <div class="lbl-page-action-header">EDIT APPROVAL LEVEL</div>
+                </div>
+                <form class="forms-sample" ng-submit="submitFinanceAuthority()">
+                    <div class="master-add-form">   
+                            <div class="master-add-form-filed" aria-readonly="true">
+                                <label for="inputState" class="form-label">Authority:</label>
+                              <input type="text" class="form-control" value="FINANCE APPROVAL" readonly>
+                            </div>
+                            <div class="master-add-form-filed">
+                                <label for="inputState" class="form-label">User:</label>
+                                <select ng-model="form.userId" class="form-select"
+                                    ng-options="mang.id as mang.name for mang in managers"
+                                    required>
+                                    <option value="">-Select Option-</option>
+                                </select>
+                            </div>
+                        <div class="btn-container">
+                            <button type="submit" class="btn btn-submit mt-3 ms-4">SAVE</button>
+                            <button type="submit" class="btn btn-cancel mt-3" ng-click="refresh()"
+                            onclick="openMasterAddview(this)">CANCEL</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <div class="page-action-container">
+                <div class="page-action-start-container ms-4">
+                    <div class="lbl-page-action-header">Finance Authority List</div>
+                </div>
+                <div class="page-action-end-container">
+                    <form class="position-relative">
+                        <input class="form-control" type="search" ng-model="search"
+                        placeholder="Search Finance Authority..."
+                        aria-label="Search">
+                        <span class="icon-common icon-form icon-search"></span>
+                    </form>
+                </div>
+            </div>
+            <div class="user-details overflow-x-auto">
+                <table class="table-user-details table-lg">
+                    <tr class="table-head-primary">
+                        <th class="text-start">
+                            <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                        </th>
+                        <th>User</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr ng-repeat="auth in authority | filter:search" class="master-list">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                            </div>
+                        </td>
+                        <td>{{auth.name}}</td>
+                        <td>
+                            <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit change-master-form-view"
+                                    onclick="openMasterEditview(this)">
+                                    <span class="icon-common icon-action icon-edit-new"
+                                        ng-click="authorityEdit(auth.id)"></span>
+                                </span>
+                                <span class="btn-action btn-icon btn-trash">
+                                    <span class="icon-common icon-action icon-trash"
+                                        ng-click="deleteSAuthority(auth.id)"></span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <div class="spinner-wrapper" id="loader">
+                    <div class="spinner">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/financeAuthority.js"></script>

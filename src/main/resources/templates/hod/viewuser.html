@@ -1,0 +1,409 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-USERS MANAGMENT</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-app="HodManagmentData" ng-controller="userManagmentController">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">User Details</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="page-action-container">
+        <div class="page-action-start-container">
+            <form>
+                <input class="form-control" type="search" ng-model="search" placeholder="Search Employee..."
+                    aria-label="Search">
+                <span class="icon-common icon-form icon-search"></span>
+            </form>
+        </div>
+        <!-- <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action btn-page-action-dropdown" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span>More</span>
+                    <span class="icon-common icon-chevron icon-page-action-button"></span>
+                </button>
+                <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" ng-click="resetDeviceAllId()" href="#">Reset All Device</a>
+                    </li>
+                </ul>
+            </div>
+        </div> -->
+    </div>
+    <div class="user-details-wrapper">
+        <div class="user-details">
+            <table class="table-user-details">
+                <tr class="table-head-primary">
+                    <th>SL No.</th>
+                    <th class="align-left" style="width: 10%;">Name</th>
+                    <th class="align-left">Location</th>
+                    <th class="align-left">Employee Details</th>
+                    <th class="align-left">Contact Details</th>
+                    <th class="align-left">Authority</th>
+                    <th>Image</th>
+                    <th sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')">Status</th>
+                    <th sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')" style="width: 10%;">Action</th>
+                </tr>
+                <div class="spinner-wrapper" id="loader">
+                    <div class="spinner">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <tbody ng-repeat="userDetail in userDetails | filter:search ">
+                    <tr class="row-red">
+                        <td>{{$index+1}}</td>
+                        <td class="align-left">{{userDetail.name}}</td>
+                        <td class="align-left">{{userDetail.location}}</td>
+                        <td class="align-left">
+                            <strong>Username: </strong>{{userDetail.username}} <br>
+                            <strong>empCode: </strong>{{userDetail.empCode}} <br>
+                            <strong>Department: </strong>{{userDetail.department}}
+                        </td>
+                        <td class="align-left">
+                            <strong>Mobile: </strong>{{userDetail.mobile}} <br>
+                            <strong>Email: </strong>{{userDetail.email}}
+                        </td>
+                        <td class="align-left">
+                            <strong>ReportingManager: </strong>{{userDetail.nameReportManager}} <br>
+                            <strong>HOD: </strong>{{userDetail.nameHod}} <br>
+                            <strong>FinanceAuthority: </strong>{{userDetail.nameFinanceAuth}}
+                        </td>
+                        <td class="sub-row-data">
+                            <span ng-if="userDetail.images != null">
+                                <!-- <img id="image_view_modal"
+     ng-click="setImageAsViewed($index, userDetail.images, userDetail.id, userDetail.faceDataApproved)"
+     ng-src="{{userDetail.images}}"
+     width="100"
+     height="100"
+     style="border-radius: 50%; cursor: pointer;"
+     ng-style="{'border': userDetail.faceDataApproved ? '4px solid green' : '4px solid red'}"
+     onload="this.classList.add('loaded')"
+     class="loading-image"/> -->
+                                <img ng-src="{{userDetail.images}}" class="img-thumbnail" alt="User Image"
+                                    ng-click="setImageAsViewed($index, userDetail.images, userDetail.id, userDetail.faceAttendance, userDetail.appvBy)"
+                                    ng-style="{'border': userDetail.faceAttendance ? '4px solid green' : '4px solid red'}">
+                            </span>
+                        </td>
+
+                        <td sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN')">
+                            <div ng-If="userDetail.enabled ==true" class="content-center">
+                                <input type="hidden" name="_token" value="">
+                                <label class="switch" title="User Status">
+                                    <input class="user" ng-click="userDeactivation(userDetail.id)" type="checkbox"
+                                        data-id="2" name="status" checked="">
+                                    <span class="knob"></span>
+                                </label>
+                            </div>
+                            <div ng-If="userDetail.enabled ==false" class="content-center">
+                                <input type="hidden" name="_token" value="">
+                                <label class="switch" title="User Status">
+                                    <input class="user" ng-click="userActivation(userDetail.id)" type="checkbox"
+                                        data-id="2" name="status">
+                                    <span class="knob"></span>
+                                </label>
+                            </div>
+                        </td>
+                        <!-- <td> -->
+                        <!-- <div class="action-container">
+                                <span class="btn-action btn-icon btn-edit"
+                                    sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','HOD')"
+                                    ng-click="edit(userDetail.id)">
+                                    <span class="icon-common icon-action icon-edit-new"></span>
+                                </span>
+                                <span class="btn-action" sec:authorize="hasAnyAuthority('ADMIN','SUPERADMIN','HOD')">
+                                    <span class="icon-common icon-action icon-reset-pass"
+                                        ng-click="resetPassword(userDetail.id)"></span>
+                                </span>
+                                <span class="btn-action action-resetdevice-container"
+                                    ng-If="userDetail.deviceId !=null">
+                                    <span class="icon-common icon-action icon-device"
+                                        ng-click="resetDeviceId(userDetail.id)"></span>
+                                </span> -->
+                        <!-- <span class="btn-action" ng-If="userDetail.embedding!=null">
+                                    <span class="icon-common icon-action icon-reset-embadding"
+                                        ng-click="resetEmbaddingId(userDetail.id)"></span>
+                                </span> -->
+                        <!-- </div> -->
+                        <!-- </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal" ng-show="showModal">
+            <div class="modal-content">
+                <h2>Modal Title</h2>
+                <p>This is the modal content.</p>
+                <button ng-click="closeModal()">Close</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div style="display: none" id="loader2"></div>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="width: 150%!important;">
+
+                    <div class="modal-body">
+                        <div class="lbl-user-reg-sub-header">Edit User</div>
+                        <div class="lbl-user-reg-header">Registration</div>
+                        <form autocomplete="off" class="reg-form row g-3" ng-submit="editRegistration()">
+                            <div class="col-lg-12 col-md-12">
+                                <label for="exampleInputName" class="form-label">Name</label>
+                                <input type="text" ng-model="form.name" class="form-control"
+                                    placeholder="Enter User Name" aria-describedby="fullNameHelp" required>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label">Username</label>
+                                <input type="text" ng-model="form.username" class="form-control"
+                                    placeholder="Enter User Username" aria-describedby="fullNameHelp" required>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label">Employee Code</label>
+                                <input type="text" ng-model="form.empCode" class="form-control"
+                                    placeholder="Enter User Employee Id" aria-describedby="fullNameHelp">
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label">Email</label>
+                                <input type="email" ng-model="form.email" class="form-control"
+                                    placeholder="Enter User Email Id" aria-describedby="fullNameHelp" required>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <label for="exampleInputName" class="form-label">Phone Number</label>
+                                <input type="text" ng-model="form.mobile" class="form-control"
+                                    placeholder="Enter User Phone" aria-describedby="fullNameHelp" required>
+                            </div>
+                            <div class="col-lg-6 col-md-12 position-relative">
+                                <label for="exampleInputName" class="form-label">Password</label>
+                                <input type="password" ng-model="form.rawPassword" class="form-control"
+                                    placeholder="Enter User Password">
+                                <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword2"></span>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">Department</label>
+                                <select ng-model="form.department" class="form-select"
+                                    ng-options="dept.name as dept.name for dept in department" required>
+                                    <option value="" disabled selected>Select Option-</option>
+                                    <!-- <option ng-repeat="dept in department" value="{{ dept.name }}">{{ dept.name }} -->
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">Reporting Manager</label>
+                                <select ng-model="form.reportManager"
+                                    ng-options="mang.id as mang.name for mang in managers" class="form-select" required>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">HOD</label>
+                                <select ng-model="form.hod" class="form-select"
+                                    ng-options="mang.id as mang.name for mang in managers" required>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">Finance Authority</label>
+                                <select ng-model="form.financeAuth"
+                                    ng-options="auth.userId as auth.name for auth in authority" class="form-select"
+                                    required>
+                                </select>
+                                <option value=""></option>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">Location</label>
+                                <select ng-model="form.location_id"
+                                    ng-options="location.id as location.city for location in locations"
+                                    class="form-select">
+                                    <option value="" disabled selected>-Select Option-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <label for="inputState" class="form-label">User-Type</label>
+                                <select ng-model="form.role" ng-init="form.role = 'ADMIN'"
+                                    ng-options="roletype.name as roletype.name for roletype in roletypes"
+                                    class="form-select">
+                                    <option value="" disabled selected>-Select Option-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12" ng-if="form.role=='FINANCE'">
+                                <label for="inputState" class="form-label">ACCESS</label>
+                                <select ng-model="form.financeAccessArea" class="form-select">
+                                    <option value="" disabled selected>Select an Option</option>
+                                    <option value="A">ALL</option>
+                                    <option value="S">ASSIGN</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-12" ng-if="form.role  != 'ADMIN'  && form.role!='FINANCE'">
+                                <label for="inputState" class="form-label">Grade</label>
+                                <select ng-model="form.grade_id" ng-options="grade.id as grade.name for grade in grades"
+                                    class="form-select">
+                                    <option value="">Select Option</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-md-12">
+                                <label for="exampleInputName" class="form-label">Bank Name</label>
+                                <input type="text" ng-model="form.bankName" class="form-control"
+                                    placeholder="Enter User Bank Name" aria-describedby="fullNameHelp">
+                            </div>
+                            <div class="col-lg-3 col-md-12">
+                                <label for="exampleInputName" class="form-label">A/C No</label>
+                                <input type="text" ng-model="form.bankACNo" class="form-control"
+                                    placeholder="Enter User A/C No" aria-describedby="fullNameHelp">
+                            </div>
+                            <div class="col-lg-3 col-md-12">
+                                <label for="exampleInputName" class="form-label">IFSC Code</label>
+                                <input type="text" ng-model="form.bankIFSCCode" class="form-control"
+                                    placeholder="Enter User Bank IFSC Code" aria-describedby="fullNameHelp">
+                            </div>
+                            <div class="col-lg-3 col-md-12">
+                                <label for="exampleInputName" class="form-label">Bank Type</label>
+                                <input type="text" ng-model="form.bankType" class="form-control"
+                                    aria-describedby="fullNameHelp">
+                            </div>
+                            <div class="col-lg-4 col-md-12" style="display: none;">
+                                <label for="inputState" class="form-label">Company</label>
+                                <select ng-model="form.company_id" ng-options="com.id as com.name for com in company"
+                                    ng-change="fetchGradeByCompanyId();" class="form-select">
+                                    <option value="" disabled selected>Select Option-</option>
+                                </select>
+                            </div>
+
+
+                            <div class="btn-container text-end">
+                                <input class="btn btn-cancel me-4 mt-3" data-bs-dismiss="modal" value="CANCEL"></button>
+                                <input type="submit" class="btn btn-submit mt-3" value="SUBMIT"></button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ***********************modal start**************************** -->
+        <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="fileUpladModal">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Image Upload</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <form id="kt_ecommerce_settings_general_form" class="form"
+                        ng-submit="uploadImage(form.uploadFile,form.id)">
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="fv-row mb-7">
+                                        <label class="fs-12 fw-semibold form-label mt-3"><span class=""><b>Upload
+                                                    Image</b></span></label> <input type="file"
+                                            class="form-control form-control-solid" file-model="form.uploadFile"
+                                            name="filename">
+                                        <!-- <a class="border border-secondary btn btn-icon btn-light-primary" ng-click="uploadImage(form.uploadFile,form.id)" title="Upload"><i class="mdi mdi-upload"></i></a> -->
+                                    </div>
+                                    <input type="hidden" class="form-control form-control-solid" hidden
+                                        ng-model="form.id" placeholder=" Narration" name="Assets_No" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- modal for image view -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true" id="imageViewModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content w-75">
+                    <div class="modal-header">
+                        <h3 class="modal-title" style="text-align: center;">Image
+                            View</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-muted svg-icon-2hx"><svg
+                                    style="height: 2rem !important; width: 2rem !important;" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3"
+                                        d="M6 19.7C5.7 19.7 5.5 19.6 5.3 19.4C4.9 19 4.9 18.4 5.3 18L18 5.3C18.4 4.9 19 4.9 19.4 5.3C19.8 5.7 19.8 6.29999 19.4 6.69999L6.7 19.4C6.5 19.6 6.3 19.7 6 19.7Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M18.8 19.7C18.5 19.7 18.3 19.6 18.1 19.4L5.40001 6.69999C5.00001 6.29999 5.00001 5.7 5.40001 5.3C5.80001 4.9 6.40001 4.9 6.80001 5.3L19.5 18C19.9 18.4 19.9 19 19.5 19.4C19.3 19.6 19 19.7 18.8 19.7Z"
+                                        fill="currentColor" />
+                                </svg> </span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{view_image}}"
+                            style="max-width: 100%; min-width: 100%; max-height: 70vh; min-height: 50vh"
+                            id="modalImage">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <div class="lbl-status-striker btn lbl-success-stricker" ng-if="!appvl && appvlBy !== 'A'"
+                            ng-click="approvedFace(form_id)">
+                            Approved
+                        </div>
+
+                        <div class="lbl-status-striker btn lbl-danger-stricker" ng-if="appvlBy !== 'A'"
+                            ng-click="disApprovedFace(form_id)">
+                            Disapproved
+                        </div>
+
+                        <div class="lbl-status-striker btn lbl-warning-stricker" ng-click="resetImage(form_id)">
+                            Reset
+                        </div>
+
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragment/footer"></div>
+<script>
+    $scope.resizeImage = function (base64Image, maxSize, callback) {
+        var img = new Image();
+        img.onload = function () {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var scale = Math.min(maxSize / img.width, maxSize / img.height);
+
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            callback(canvas.toDataURL()); // This is the thumbnail base64
+        };
+        img.src = base64Image;
+    };
+
+</script>
+<script src="private/hod/userview.js"></script>

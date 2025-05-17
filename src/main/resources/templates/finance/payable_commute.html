@@ -1,0 +1,90 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-DISAPPROVED DATA</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-controller="payableDataController" ng-app="payableData">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">TA Details Sheet</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="page-action-container">
+        <div class="page-action-start-container d-flex ms-5">
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action" type="button" ng-click="markPaidData()">
+                    <span>Add Paid Cluster</span>
+                </button>
+            </div>
+        </div>
+        <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action btn-page-action-dropdown" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="lbl-page-action-button">Export As</span>
+                    <span class="icon-common icon-chevron icon-page-action-button"></span>
+                </button>
+                <ul class="dropdown-menu action-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li>
+                        <a class="dropdown-item" ng-click="exportData()">
+                            <span class="icon-common icon-action-dropdown icon-excel"></span>
+                            <span class="" 
+                            >Excel</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" ng-click="printData()">
+                            <span class="icon-common icon-action-dropdown icon-print"></span>
+                            <span class="" >Print</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="user-details overflow-x-auto" id="balanceReport">
+        <table class="table-user-details table-lg">
+            <tr class="table-head-primary">
+                <th>
+                    <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                </th>
+                <th>Name</th>
+                <th>Employee Id</th>
+                <th>Advance Amount</th>
+                <th>Allowance Amount</th>
+                <th>Approved Date</th>
+                <th>Bank Name</th>
+                <th>Bank Type</th>
+                <th>Bank A/C</th>
+                <th>IFSC Code</th>
+                <th>Approved Cluster</th>
+                <th>Payable Amount</th>
+            </tr>
+
+            <tr  ng-repeat="bal in balanceSheet | filter:search">
+                <td>
+                    <div class="d-flex align-items-center">
+                        <input class="form-check-input mt-0 me-2" type="checkbox" ng-model="bal.selected" 
+                            id="flexCheckDefault ">
+                        <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                    </div>
+                
+                </td>
+                <td>{{bal.name}}</td>
+                <td>{{bal.employeeId}}</td>
+                <td>&#8377; {{bal.advanceBalance | number : 2}}</td>
+                <td>&#8377; {{bal.payableAmount | number : 2}}</td>
+                <td>{{bal.approvedDt | date:'dd/MM/yyyy'}}</td>
+                <td>{{bal.bankName}}</td>
+                <td>{{bal.bankType}}</td>
+                <td>{{bal.bankAccountNo}}</td>
+                <td>{{bal.ifscCode}}</td>
+                <td>{{bal.clusterName}}</td>
+                <td ng-style="{ color: bal.payableAmount >=1 ? 'green' : 'red' }">
+                    &#8377; {{bal.balance | number : 2}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div th:replace="fragment/footer"></div>
+<script src="private/finance/payable.js"></script>

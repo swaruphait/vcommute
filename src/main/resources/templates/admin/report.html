@@ -1,0 +1,242 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-REPORT</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-controller="reportDataController" ng-app="reportData">
+    <div class="page-header">
+        <span class="header-line"></span> <span class="lbl-page-header">Report</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="page-action-container">
+        <div class="page-action-start-container">
+            <div class="btn-page-action-container">
+                <select class="btn btn-page-action btn-page-action-dropdown" ng-model="nameList.user_id"
+                    ng-change="getDataNameWise(nameList.user_id)"
+                    ng-options="td.user_id as td.username for td in nameList">
+                    <option class="select-item" value="">-Select Users-</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+
+                <div class="dropdown">
+                    <button class="btn btn-page-action" type="button"
+                        id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="icon-common icon-filter icon-page-action-button"></span>
+                        <span class="lbl-page-action-button">Filter</span>
+                    </button>
+                    <form ng-submit="fetchHodTravelDataReport()">
+                        <ul class="dropdown-menu filter-dropdown-menu"
+                            aria-labelledby="dropdownMenuButton1">
+                            <div class="lbl-filter-header">Start Date:</div>
+                            <input class="form-control filter-date-picker" type="date"
+                                ng-model="date.startdate" placeholder="dd-mm-yyy">
+
+                            <div class="lbl-filter-header">End Date:</div>
+                            <input class="form-control filter-date-picker" type="date"
+                                ng-model="date.enddate" placeholder="dd-mm-yyy">
+
+                            <div class="lbl-filter-header">Activity Status:</div>
+                            <select class="form-select filter-select"
+                                ng-model="date.active"
+                                ng-init="date.active = 'ALL'"
+                                 ng-selected="date.active==true">
+                                <option value="ALL" selected>ALL</option>
+                                <option value="A" selected>Approve</option>
+                                <option value="D">Disapprove</option>
+                                <option value="P">Pending</option>
+                            </select>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-apply btn-primary">
+                                    <span class="lbl-btn">Apply</span> <span
+                                        class="icon-common icon-btn icon-check"></span>
+                                </button>
+                            </div>
+                        </ul>
+                    </form>
+                </div>
+
+            </div>
+            <div class="btn-page-action-container">
+                <button class="btn btn-page-action btn-page-action-dropdown"
+                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <span class="lbl-page-action-button">Export As</span> <span
+                        class="icon-common icon-chevron icon-page-action-button"></span>
+                </button>
+                <ul class="dropdown-menu action-dropdown-menu"
+                    aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" ng-click="exportData()"> <span
+                            class="icon-common icon-action-dropdown icon-excel"></span> <span
+                            class="">Excel</span>
+                    </a></li>
+                    <li><a class="dropdown-item" ng-click="printData()"> <span
+                            class="icon-common icon-action-dropdown icon-print"></span> <span
+                            class="">Print</span>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="user-details overflow-x-auto" id="customers">
+        <table class="table-user-details table-lg">
+            <tr class="table-head-primary">
+                <th><label class="form-check-label" for="flexCheckDefault">SL
+                        No.</label></th>
+                <th>Name</th>
+                <th  style="width: 10%;">Customer Name</th>
+                <!-- <th>Mode</th> -->
+                <th>
+                    <div>Start Date</div>
+                    <div>Start Time</div>
+                </th>
+                <th>
+                    <div>Start Location</div>
+                    <div>Lat/Long</div>
+                </th>
+                <th>
+                    <div>End Date</div>
+                    <div>End Time</div>
+                </th>
+                <th>
+                    <div>End Location</div>
+                    <div>Lat/Long</div>
+                </th>
+                <th>Distance</th>
+                <th>Travel Time</th>
+                <th style="width: 7%;">
+                    <div>Est. Price</div>
+                    <div>Act. Price</div>
+                </th>
+                <th>Purpose</th>
+                <th>Ref. Code</th>
+                <th>Remarks</th>
+                <th>Status</th>
+
+                <div class="spinner-wrapper" id="loader">
+                    <div class="spinner">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            <tr ng-repeat="td in travelData | filter:search">
+                <td>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                    </div>
+                </td>
+                <td>{{td.username}}</td>
+                <td>{{td.customerName}}</td>
+                <!-- <td>{{td.modeName}}</td> -->
+                <td>
+                    <div>{{td.startDate}}</div>
+                    <div>{{td.startTime}}</div>
+                </td>
+                <td>
+                    <div class="value-tooltip-container">
+                        <div class="lbl-value" ng-if="td.startLocationArea!=null">{{td.startLocationArea}}</div>
+                        <div class="lbl-value lbl-short-value lbl-ellipsis" ng-if="td.startLocationArea==null || td.startLocationArea==''">{{td.startLocation}}</div>
+                        <div class="value-details">
+                            <div class="value-tooltip">
+                                <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <a class="me-2 text-area" href="https://www.google.com/maps?q={{td.startLat}},{{td.startLong}}" target="_blank">{{td.startLocation}}</a>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                                <div class="dv-seperator-sm"></div>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <span class="me-2 text-area">{{td.startLat}}, {{td.startLong}}</span>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div>{{td.endDate}}</div>
+                    <div>{{td.endTime}}</div>
+                </td>
+                <td>
+                    <div class="value-tooltip-container">
+                        <div class="lbl-value" ng-if="td.endLocationArea!=null">{{td.endLocationArea}}</div>
+                        <div class="lbl-value lbl-short-value lbl-ellipsis" ng-if="td.endLocationArea==null || td.endLocationArea==''">{{td.endLocation}}</div>
+                        <div class="value-details">
+                            <div class="value-tooltip">
+                                <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <a class="me-2 text-area" href="https://www.google.com/maps?q={{td.endLat}},{{td.endLong}}" target="_blank">{{td.endLocation}}</a>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                                <div class="dv-seperator-sm"></div>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <span class="me-2 text-area">{{td.endLat}}, {{td.endLong}}</span>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </td>
+                <td>{{td.totalDistance | number: 3}} k.m</td>
+                <td>{{td.totalTime}}</td>
+                <td>
+                    <div class="lbl-nowrap">&#8377; {{td.totalEstimatePrice | number :
+                        2}}</div> <!-- <div> &#8377; {{td.actualPrice | number : 2}}</div> -->
+                    <div class="lbl-nowrap">
+                        &#8377; {{td.totalActualPrice | number : 2}}
+                        <!-- <div class="input-group-prepend">
+                            <div class="input-group-text">&#8377;</div>
+                        </div> -->
+                        <!-- <input type="text" class="form-control"
+                            id="inlineFormInputGroup" placeholder="0.0"
+                            value="{{td.totalActualPrice | number : 2}}"> -->
+                    </div>
+                </td>
+                <td>
+                    <div class="value-tooltip-container">
+                        <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.purpose}}</div>
+                        <div class="value-details">
+                            <div class="value-tooltip">
+                                <div>{{td.purpose}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="word-break">{{td.referencenumber}}</td>
+                <td class="word-break">
+                    <div class="value-tooltip-container">
+                        <div class="lbl-value lbl-ellipsis lbl-purpose">{{td.remarks}}</div>
+                        <div class="value-details">
+                            <div class="value-tooltip">
+                                <div>{{td.remarks}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div ng-If="td.approvalLevel !='D' && td.approvalLevel !='A'  && td.approvalLevel !='A2'"
+                        class="lbl-status-striker lbl-warning-stricker">Pending</div>
+                <div ng-If="td.approvalLevel =='A2'"
+                        class="lbl-status-striker lbl-inprogress-stricker">Pending Finance</div>
+                    <div ng-If="td.approvalLevel =='A'"
+                        class="lbl-status-striker lbl-success-stricker">Approved</div>
+                    <div ng-If="td.approvalLevel =='D'"
+                        class="lbl-status-striker lbl-danger-stricker">Disapproved
+                    </div>
+                </td>
+            </tr>
+            <tr ng-if="travelData.length == 0">
+                <td colspan="15" style="font-size: large;">No data found
+                    current month</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/admin/report.js"></script>

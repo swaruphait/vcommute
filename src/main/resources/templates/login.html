@@ -1,18 +1,27 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="utf-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>V Commute</title>
   <link rel="stylesheet" href="site.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
     rel="stylesheet">
   <!-- <link rel="stylesheet" href="../v-commute/site.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.9/sweetalert2.min.css"
+    integrity="sha512-cyIcYOviYhF0bHIhzXWJQ/7xnaBuIIOecYoPZBgJHQKFPo+TOBA+BY1EnTpmM8yKDU4ZdI3UGccNGCEUdfbBqw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.9/sweetalert2.all.min.js"
+    integrity="sha512-IZ95TbsPTDl3eT5GwqTJH/14xZ2feLEGJRbII6bRKtE/HC6x3N4cHye7yyikadgAsuiddCY2+6gMntpVHL1gHw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
 </head>
 <style>
   @import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
@@ -26,11 +35,8 @@
 
   body {
     font-family: 'Ubuntu', sans-serif;
-    /* background: url(assets/images/login-bg.svg) no-repeat; */
-    /* background-size: 102vw 102vh; */
     background-position: center;
     height: 100vh;
-
     overflow: hidden;
     position: relative;
   }
@@ -42,22 +48,26 @@
     z-index: 99;
   }
 
-  .login-area, .image-area {
+  .login-area,
+  .image-area {
     justify-content: center;
     align-content: center;
   }
+
   .login-area {
     position: relative;
     height: 100vh;
     padding: 30px;
   }
+
   .image-area {
     background: #0467B2;
     position: relative;
     height: 100vh;
     transform: scale(1, 1);
     z-index: 9;
-  } 
+  }
+
   .img-login {
     width: 85%;
   }
@@ -67,10 +77,13 @@
     overflow-y: auto;
     overflow-x: hidden;
   }
-  .login-form-container, .login-image-container {
+
+  .login-form-container,
+  .login-image-container {
     z-index: 99;
     padding: 10px;
   }
+
   .brand-header {
     font-size: 38px;
     font-weight: 700;
@@ -78,6 +91,7 @@
     margin-bottom: 30px;
     letter-spacing: 5px;
   }
+
   .login-header {
     font-size: 24px;
     font-weight: 500;
@@ -101,6 +115,7 @@
     text-align: center;
     margin-bottom: 15px;
   }
+
   .login-image-sub-header {
     color: #99C9EE;
     font-weight: 700;
@@ -108,6 +123,7 @@
     letter-spacing: 2px;
     text-align: center;
   }
+
   .btn-primary {
     background-color: #0265A8;
     border-color: #0265A8;
@@ -127,30 +143,38 @@
   a {
     text-decoration: none;
   }
- .link-label-container {
+
+  .link-label-container {
     min-height: 24px;
- }
-  .form-check-label, .lbl-forgot-pass, .form-link-secondary {
+  }
+
+  .form-check-label,
+  .lbl-forgot-pass,
+  .form-link-secondary {
     font-size: 14px;
     cursor: pointer;
   }
+
   .lbl-forgot-pass {
     color: #0060A9;
   }
- .form-check-label, .form-link-secondary {
+
+  .form-check-label,
+  .form-link-secondary {
     color: #909090;
   }
-  .form-check-label:hover, .form-link-secondary:hover {
+
+  .form-check-label:hover,
+  .form-link-secondary:hover {
     color: #1f1e1e;
   }
+
   .form-link-secondary {
     display: inile-flex;
     align-items: center;
     justify-content: center;
   }
-  /* .form-check-label:hover, .lbl-forgot-pass:hover, .form-link-secondary:hover {
-    
-  } */
+
   .icon-common {
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
@@ -170,6 +194,7 @@
     cursor: pointer;
     position: absolute;
   }
+
   .icon-header-container {
     border-radius: 50%;
     display: inline-flex;
@@ -180,13 +205,17 @@
     height: 35px;
     background-color: #FEF6D9;
   }
-  .icon-header, .icon-link-label {
+
+  .icon-header,
+  .icon-link-label {
     height: 18px;
     width: 18px;
   }
-.icon-link-label {
+
+  .icon-link-label {
     margin-right: 6px;
   }
+
   .icon-form {
     right: 15px;
     top: 8px;
@@ -198,7 +227,7 @@
     left: 15px;
     top: 8px;
   }
-  
+
   .icon-toggle-pass {
     mask-image: url(assets/icons/eye-fill.svg) !important;
     -webkit-mask-image: url(assets/icons/eye-fill.svg) !important;
@@ -213,22 +242,27 @@
     mask-image: url(assets/icons/user-email.svg);
     -webkit-mask-image: url(assets/icons/user-email.svg);
   }
- .icon-email {
+
+  .icon-email {
     mask-image: url(assets/icons/email.svg);
     -webkit-mask-image: url(assets/icons/email.svg);
   }
+
   .icon-telephone {
     mask-image: url(assets/icons/telephone.svg);
     -webkit-mask-image: url(assets/icons/telephone.svg);
   }
+
   .icon-lock {
     mask-image: url(assets/icons/lock.svg);
     -webkit-mask-image: url(assets/icons/lock.svg);
   }
+
   .icon-lock-fill {
     mask-image: url(assets/icons/lock-fill.svg);
     -webkit-mask-image: url(assets/icons/lock-fill.svg);
   }
+
   .icon-header.icon-lock-fill {
     background-color: #BA9205;
   }
@@ -237,12 +271,15 @@
     mask-image: url(assets/icons/arrow-left.svg);
     -webkit-mask-image: url(assets/icons/arrow-left.svg);
   }
+
   .form-link-secondary .icon-arrow-left {
     background-color: #909090;
   }
+
   .form-link-secondary:hover .icon-arrow-left {
     background-color: #1f1e1e;
   }
+
   .icon-exclamation {
     mask-image: url(assets/icons/exclamation-circle.svg);
     -webkit-mask-image: url(assets/icons/exclamation-circle.svg);
@@ -250,7 +287,7 @@
     height: 18px;
     width: 18px;
   }
-  
+
   .form-control {
     padding: 0.375rem 0.75rem 0.375rem 2.75rem;
     border-radius: 5px;
@@ -258,37 +295,44 @@
     background-color: #fff !important;
     font-size: 14px;
   }
-  
+
   .login-error .form-control {
     border-color: #BD1111;
   }
+
   .login-error .form-control:focus {
     box-shadow: 0 0 0 0.25rem #bd11113f;
   }
+
   .error-msg-container {
     opacity: 0;
     pointer-events: none;
     margin-bottom: 15px;
   }
+
   .login-error .error-msg-container {
     opacity: 1;
   }
+
   .lbl-login-error {
     color: #BD1111;
     font-size: 14px;
   }
+
   .img-bg-style {
     position: fixed;
-    /* display: none; */
   }
+
   .style-1 {
     top: 0;
     left: 0;
   }
+
   .style-2 {
     bottom: 0;
     left: 40%;
   }
+
   .area-container {
     position: relative;
   }
@@ -302,11 +346,13 @@
     background-repeat: no-repeat;
     left: -68px;
   }
+
   .lbl-ellipsis {
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
   }
+
   .lbl-confirmation-modal {
     color: #313131;
     text-align: center;
@@ -315,104 +361,221 @@
     line-height: 26px;
     letter-spacing: 0.6px;
   }
+
   .btn-modal {
     width: 72px;
   }
+
   .img-success {
     width: 60px;
   }
+
+  .spinner-wrapper {
+    position: absolute;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    background-color: #00000013;
+    backdrop-filter: blur(4px);
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
+
+  .spinner {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  }
+
+  .spinner .dot {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .spinner .dot::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: rgb(12, 180, 231);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spinner .dot {
+    animation: spin 2s infinite;
+  }
+
+  .spinner .dot:nth-child(2) {
+    animation-delay: 100ms;
+  }
+
+  .spinner .dot:nth-child(3) {
+    animation-delay: 200ms;
+  }
+
+  .spinner .dot:nth-child(4) {
+    animation-delay: 300ms;
+  }
+
+  .spinner .dot:nth-child(5) {
+    animation-delay: 400ms;
+  }
+
   @media (max-width: 1199px) {
     body {
       background: unset;
     }
+
     .image-area::before {
       content: unset;
     }
   }
+
   @media (max-width: 991px) {
     .login-form-container {
       width: 350px;
     }
   }
+
   @media (max-width: 767px) {
     .image-area {
       display: none !important;
     }
+
     .style-2 {
       right: -28%;
       left: auto;
     }
   }
+
   @media (max-width: 576px) {
     .login-form-container {
       width: auto;
     }
+
     .brand-header {
       font-size: 32px;
       margin-bottom: 50px;
     }
+
     .login-header {
       font-size: 20px;
       margin-bottom: 12px;
     }
   }
-   @media (max-width: 300px) {
+
+  @media (max-width: 300px) {
     .brand-header {
       font-size: 24px;
       margin-bottom: 30px;
     }
+
     .login-header {
       font-size: 18px;
     }
+
   }
 </style>
-<body>
-  <!-- new page -->
+
+<script type="text/javascript">
+
+  var mainApp = angular.module("forgopass", []);
+  mainApp.controller('forgopassController', function ($scope, $http) {
+    $scope.forgopass = {
+      username: "",
+      email: "",
+      mobile: "",
+    };
+
+    $scope.submitForgoPass = function () {
+      document.getElementById("loader").style.display = "block"
+      var method = "";
+      var url = "";
+      method = "GET";
+      url = 'forgopass';
+      $http({
+        method: method,
+        url: url,
+        params: {
+          "username": $scope.forgopass.username,
+          "email": $scope.forgopass.email,
+          "mobile": $scope.forgopass.mobile
+        },
+        transformResponse: angular.identity
+      }).then(function successCallback(response) {
+        document.getElementById("loader").style.display = "none"
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: response.data,
+          showConfirmButton: true,
+        }).then(function () {
+          location.reload();
+        });
+      }, function errorCallback(response) {
+        document.getElementById("loader").style.display = "none"
+        console.log(response.data);
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: response.data,
+          showConfirmButton: true,
+        })
+      });
+    };
+
+  });
+</script>
+
+<body ng-controller="forgopassController" ng-app="forgopass">
   <img src="assets/icons/logo.png" alt="" class="login-logo">
-  
   <img src="assets/images/login-bg-style-1.svg" alt="" class="img-bg-style style-1">
   <img src="assets/images/login-bg-style-2.svg" alt="" class="img-bg-style style-2">
   <div th:if="${param.error}" id="loginError"></div>
   <div class="area-container" id="loginArea">
     <div class="row">
       <div class="col-md-6 col-sm-12 login-area d-grid">
-        <!-- login-form -->
         <div class="login-form-container" id="dvLogin">
           <div class="brand-header lbl-ellipsis">V-COMMUTE</div>
           <div class="login-header lbl-ellipsis">Login To Your Account</div>
           <div class="login-sub-header">Welcome Back...</div>
           <div class="error-msg-container">
             <span class="icon-common icon-exclamation me-1"></span>
-            <span class="lbl-login-error" >Invalid Username Or Password</span>
+            <span class="lbl-login-error">Invalid Username Or Password</span>
           </div>
-          <form class="" th:action="@{/login}" method="post" id="loginform" >
+          <form class="" th:action="@{/login}" method="post" id="loginform">
             <div class="mb-4 position-relative">
               <span class="icon-common icon-email icon-form-before"></span>
-              <input type="text" class="form-control" id="exampleInputEmail1"  aria-describedby="emailHelp" name="username" placeholder="Enter Username" required>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                name="username" required value='' placeholder="Enter Username">
             </div>
             <div class="mb-4 position-relative">
               <span class="icon-common icon-lock icon-form-before"></span>
-              <input type="password" class="form-control" id="idPassword" name="password" required value='' placeholder="Password">
+              <input type="password" class="form-control" id="idPassword" ng-model="login.password" name="password"
+                required value='' placeholder="Password">
               <span class="icon-common icon-toggle-pass-slash icon-form" id="togglePassword"></span>
             </div>
             <div class="row mb-3">
-              <div class="col-6">
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">Remember Me</label>
-                </div>
-              </div>
-              <div class="col-6 text-end">
-                <a class="lbl-forgot-pass" id="linkForgetPass">Forgot Password?</a>
+              <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+              <div class="ms-5">
+                <a class="lbl-forgot-pass" id="linkForgetPass">Forgot Password</a>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
             <div class="link-label-container"></div>
+
           </form>
         </div>
-
-        <!-- forget-pass-form -->
-        <div class="login-form-container d-none" id="dvForgetPass"> 
+        <div class="login-form-container d-none" id="dvForgetPass">
           <div class="brand-header lbl-ellipsis">V-COMMUTE</div>
           <div class="login-header lbl-ellipsis">
             <span class="icon-header-container"><span class="icon-common icon-header icon-lock-fill"></span></span>
@@ -423,23 +586,32 @@
             <span class="icon-common icon-exclamation me-1"></span>
             <span class="lbl-login-error">Invalid Username Or Password</span>
           </div>
-          <form class="" th:action="@{/resetpass}" method="post" id="resetform">
+          <div class="spinner-wrapper" style="display: none" id="loader">
+            <div class="spinner">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <form class="" ng-submit="submitForgoPass()" id="resetform">
             <div class="mb-4 position-relative">
               <span class="icon-common icon-user icon-form-before"></span>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="userName" required
-                value='' placeholder="Username">
+              <input type="text" class="form-control" ng-model="forgopass.username" id="username"
+                aria-describedby="emailHelp" required value='' placeholder="Username">
             </div>
             <div class="mb-4 position-relative">
               <span class="icon-common icon-email icon-form-before"></span>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email"
-                required value='' placeholder="Email">
+              <input type="email" class="form-control" ng-model="forgopass.email" id="Email_id"
+                aria-describedby="emailHelp" required value='' placeholder="Email">
             </div>
             <div class="mb-4 position-relative">
               <span class="icon-common icon-telephone icon-form-before"></span>
-              <input type="number" class="form-control" id="idMobileNo" ng-model="" name="phoneno" required
-                value='' placeholder="Phone Number">
+              <input type="number" class="form-control" ng-model="forgopass.mobile" id="Phone_num" name="mobile"
+                required placeholder="Phone Number">
             </div>
-            <button type="button" class="btn btn-primary w-100 mb-3" data-bs-toggle="modal" data-bs-target="#myModal">Reset Password</button>
+            <input type="submit" class="btn btn-primary w-100 mb-3" value="Reset Password"></button>
             <div class="text-center link-label-container">
               <a class="form-link-secondary" id="linkBackToLogin">
                 <span class="icon-common icon-link-label icon-arrow-left"></span>
@@ -447,6 +619,7 @@
               </a>
             </div>
           </form>
+
         </div>
       </div>
       <div class="col-md-6 image-area d-grid align-items-center justify-content-center">
@@ -461,7 +634,7 @@
   <div class="modal" id="myModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-  
+
         <!-- Modal body -->
         <div class="modal-body text-center">
           <div>
@@ -470,12 +643,14 @@
           <div class="mb-4 lbl-confirmation-modal">New password has been sent successfully to your email</div>
           <button type="button" class="btn btn-primary btn-modal" data-bs-dismiss="modal">Ok</button>
         </div>
-  
+
       </div>
     </div>
   </div>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
   <script>
     (function () {
       const togglePassword = document.querySelector('#togglePassword');
@@ -489,13 +664,25 @@
         this.classList.toggle('icon-toggle-pass');
       });
     })();
-      
+
     // Check if the element is present
     if (document.getElementById('loginError')) {
       // Add class to another element
       var loginArea = document.getElementById("loginArea");
       loginArea.classList.add('login-error');
     }
+
+    //  window.addEventListener('wheel', function (event) {
+    //     if (event.ctrlKey === true) {
+    //       event.preventDefault();
+    //     }
+    //   }, { passive: false });
+
+    //   window.addEventListener('keydown', function (event) {
+    //     if (event.ctrlKey === true && (event.key === '+' || event.key === '-')) {
+    //       event.preventDefault();
+    //     }
+    //   });
 
     var dvLogin = document.getElementById('dvLogin');
     var dvForgetPass = document.getElementById('dvForgetPass');
@@ -515,7 +702,6 @@
       dvForgetPass.classList.add('d-none');
       dvLogin.classList.remove('d-none');
     }
-
   </script>
 </body>
 

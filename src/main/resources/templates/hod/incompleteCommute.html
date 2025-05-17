@@ -1,0 +1,126 @@
+<div th:replace="fragment/head"></div>
+<title>VCOMMUTE-INCOMPLETE DATA</title>
+<div th:replace="fragment/header"></div>
+<div class="user-details-container" ng-controller="incompleteDataController" ng-app="incompleteData">
+    <div class="page-header">
+        <span class="header-line"></span>
+        <span class="lbl-page-header">Incomplete Commute Data</span>
+        <span class="header-line"></span>
+    </div>
+    <div class="page-action-container" >
+        <div class="page-action-start-container">
+            <form>
+                <input class="form-control" type="search" placeholder="Search Employee..." ng-model="search" aria-label="Search">
+                <span class="icon-common icon-form icon-search"></span>
+            </form>
+        </div>
+        <div class="page-action-end-container">
+            <div class="btn-page-action-container">
+                <div class="dropdown">
+                    <button class="btn btn-page-action" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="icon-common icon-filter icon-page-action-button"></span>
+                        <span class="lbl-page-action-button">Filter</span>
+                    </button>
+                    <form ng-submit="fetchUnfinishTravelDataHod()">
+                    <ul class="dropdown-menu filter-dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <div class="lbl-filter-header">Start Date: </div>
+                        <input class="form-control filter-date-picker" ng-model="date.startdate" type="date" placeholder="dd-mm-yyy">
+
+                        <div class="lbl-filter-header">End Date: </div>
+                        <input class="form-control filter-date-picker" ng-model="date.enddate" type="date" placeholder="dd-mm-yyy">
+                        <div class="text-center mt-4">
+                            <button class="btn btn-apply btn-primary">
+                                <span class="lbl-btn">Apply</span>
+                                <span class="icon-common icon-btn icon-check"></span>
+                            </button>
+                        </div>
+                        <div class="text-center mt-2">
+                            <button class="btn btn-link" ng-click="resetFilter()">
+                                <span class="lbl-btn">Reset Filter</span>
+                                <!-- <span class="icon-common icon-btn icon-reset"></span> -->
+                            </button>
+                        </div>
+                    </ul>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="user-details overflow-x-auto">
+        <table class="table-user-details table-lg">
+            <tr class="table-head-primary">
+                <th class="text-center">
+                    <label class="form-check-label" for="flexCheckDefault">SL No.</label>
+                </th>
+                <th>Name</th>
+                <!-- <th>Mode</th> -->
+                <th>Start Date</th>
+                <th>Start Time</th>
+                <th style="width: 10%;">Start Location</th>
+                <th>End Date</th>
+                <th>End Time</th>
+                <th>Remarks</th>
+                <th>Status</th>
+
+                <div class="spinner-wrapper" id="loader">
+                    <div class="spinner">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            <tr ng-repeat="td in travelDataHod | filter:search">
+                <td>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <label class="form-check-label" for="flexCheckDefault">{{$index+1}}</label>
+                    </div>
+                </td>
+                <td>{{td.username}}</td>
+                <!-- <td>{{td.modeName}}</td> -->
+                <td>{{td.startDate | date:"dd-MM-yyyy"}}</td>
+                <td>{{td.startTime}}</td>
+                <td>
+                    <div class="value-tooltip-container">
+                        <div class="lbl-value" ng-if="td.startLocationArea!=null">{{td.startLocationArea}}</div>
+                        <div class="lbl-value lbl-short-value lbl-ellipsis" ng-if="td.startLocationArea==null || td.startLocationArea==''">{{td.startLocation}}</div>
+                        <div class="value-details">
+                            <div class="value-tooltip">
+                                <span class="icon-common icon-tooltip icon-location mb-1"></span>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <a class="me-2 text-area" href="https://www.google.com/maps?q={{td.startLat}},{{td.startLong}}" target="_blank">{{td.startLocation}}</a>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                                <div class="dv-seperator-sm"></div>
+                                <div class="d-flex align-items-center justify-content-center value-tooltip-item">
+                                    <span class="me-2 text-area">{{td.startLat}}, {{td.startLong}}</span>
+                                    <span class="icon-common icon-tooltip icon-copy" onclick="copyTextOnClick(this)" title="Copy to clipboard"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{td.endDate | date:"dd-MM-yyyy"}}</td>
+                <td>{{td.endTime}}</td>
+                <td class="word-break">{{td.note}}</td>
+                <!-- <td class="word-break">{{td.purpose}}</td> -->
+                <td class="d-flex align-items-center justify-content-center" ng-if="td.approvalLevel=='NS'">
+                    <div class="lbl-status-striker lbl-danger-stricker">Unfinished</div>
+                </td>
+                <td class="d-flex align-items-center justify-content-center"  ng-if="td.approvalLevel==NULL">
+                    <div class="lbl-status-striker lbl-warning-stricker">Inprocess</div>
+                </td>
+                
+                
+            </tr>
+            <tr ng-if="travelDataHod.length == 0">
+                <td colspan="15" style="font-size: large;">Current month no incomplete data found</td>
+            </tr>
+        </table>
+    
+    </div>
+</div>
+<div th:replace="fragment/footer"></div>
+<script src="private/hod/incompleteData.js"></script>
